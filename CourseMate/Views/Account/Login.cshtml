@@ -12,31 +12,48 @@
         <form asp-action="Login" method="post">
             @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="mb-3">
                 <label asp-for="Email" class="form-label"></label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
+
+ 
             <div class="mb-3">
                 <label asp-for="Password" class="form-label"></label>
-                <input asp-for="Password" class="form-control" />
+                <div class="position-relative">
+                    <input asp-for="Password" class="form-control pe-5" id="passwordInput" />
+                    <span id="togglePassword"
+                          style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); cursor: pointer; color: #555; font-size: 1.1rem;">
+                        <i class="bi bi-eye"></i>
+                    </span>
+                </div>
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-            <div class="float-end">
+
+    
+            <div class="float-end mb-3">
                 <a asp-controller="Account" asp-action="VerifyEmail" class="text-decoration-none">
                     Forgot password?
                 </a>
             </div>
+
+      
             <div class="form-check mb-3">
                 <label class="form-check-label">
                     <input asp-for="RememberMe" class="form-check-input" />
                     @Html.DisplayNameFor(a => a.RememberMe)
                 </label>
             </div>
+
             <input type="submit" value="Login" class="btn btn-success w-100 p-2" />
+
+
             <p class="text-center mt-2">
                 Don't have an account? <a asp-controller="Account" asp-action="Register" class="text-decoration-none">Register</a>
             </p>
+
             <div class="text-center">
                 <a asp-controller="Home" asp-action="Index" class="text-decoration-none mt-3">Back</a>
             </div>
@@ -48,4 +65,31 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial.cshtml");
     }
+
+    <script>
+        const togglePassword = document.querySelector("#togglePassword");
+        const passwordInput = document.querySelector("#passwordInput");
+        const icon = togglePassword.querySelector("i");
+
+ 
+        togglePassword.addEventListener("mousedown", function () {
+            passwordInput.type = "text";
+            icon.classList.remove("bi-eye");
+            icon.classList.add("bi-eye-slash");
+        });
+
+   
+        const hidePassword = () => {
+            passwordInput.type = "password";
+            icon.classList.remove("bi-eye-slash");
+            icon.classList.add("bi-eye");
+        };
+
+        togglePassword.addEventListener("mouseup", hidePassword);
+        togglePassword.addEventListener("mouseleave", hidePassword);
+    </script>
+
 }
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">

@@ -1,31 +1,45 @@
-html {
-  font-size: 14px;
+
+.btn, .nav-link {
+    transition: var(--transition);
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    .btn-primary:hover {
+        background-color: var(--hover-color);
+        border-color: var(--hover-color);
+    }
+
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+body:not(.loaded) {
+    opacity: 0;
+    transition: opacity 0.5s ease;
 }
 
-body {
-  margin-bottom: 60px;
+body.loaded {
+    opacity: 1;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
-}
+@media (max-width: 768px) {
+    .navbar-nav {
+        text-align: center;
+    }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+    .nav-item {
+        margin: 0.5rem 0;
+    }
 }

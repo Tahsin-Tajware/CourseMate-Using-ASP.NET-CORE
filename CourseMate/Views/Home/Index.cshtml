@@ -2,7 +2,19 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="text-center my-5">
+        <h1 class="display-4 fw-bold mb-4">Welcome, @User.Identity.Name!</h1>
+        <p class="lead mb-5">Explore your courses and manage your learning journey with CourseMate.</p>
+        <a asp-controller="Home" asp-action="Privacy" class="btn btn-primary btn-lg px-4">Get Started</a>
+    </div>
+}
+else
+{
+    <div class="text-center my-5">
+        <h1 class="display-4 fw-bold mb-4">Welcome to CourseMate</h1>
+        <p class="lead mb-5">Learn about building web apps with ASP.NET Core.</p>
+        <a asp-controller="Home" asp-action="Privacy" class="btn btn-primary btn-lg px-4">Get Started</a>
+    </div>
+}
