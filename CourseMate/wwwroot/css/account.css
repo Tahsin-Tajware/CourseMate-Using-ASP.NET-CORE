@@ -1,24 +1,112 @@
 ﻿.account-container {
-    background-image: url('../images/back.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: repeat-y;
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    padding: 2rem 0;
+    min-height: 95vh;
+    padding: 0rem 0;
+    overflow: hidden;
+}
+
+.background-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+    filter: brightness(0.5) contrast(1.1);
 }
 
 .account-box {
-    background: rgba(255, 255, 255, 0.15); 
-    backdrop-filter: blur(12px); 
-    -webkit-backdrop-filter: blur(12px); 
     padding: 30px;
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     max-width: 600px;
     width: 100%;
-    border: 1px solid rgba(255, 255, 255, 0.2); 
+    z-index: 1;
+    text-align: center;
+    color: #ffffff;
 }
 
+    .account-box h2 {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #ffffff;
+    }
+
+    .account-box label {
+        display: block;
+        text-align: left;
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: #f1f1f1;
+    }
+
+    .account-box input[type="email"],
+    .account-box input[type="password"],
+    .account-box input[type="text"] {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        outline: none;
+        margin-bottom: 18px;
+        font-size: 15px;
+        background: rgba(30, 30, 30, 0.85) !important;
+        color: #f1f1f1;
+        box-shadow: 0 0 5px rgb(46, 43, 43, 0.40);
+    }
+
+
+        .account-box input[type="email"]:focus,
+        .account-box input[type="password"]:focus,
+        .account-box input[type="text"]:focus,
+        .account-box input[type="email"]:-webkit-autofill,
+        .account-box input[type="password"]:-webkit-autofill,
+        .account-box input[type="text"]:-webkit-autofill,
+        .account-box input[type="email"]:-webkit-autofill:hover,
+        .account-box input[type="password"]:-webkit-autofill:hover,
+        .account-box input[type="text"]:-webkit-autofill:hover,
+        .account-box input[type="email"]:-webkit-autofill:focus,
+        .account-box input[type="password"]:-webkit-autofill:focus,
+        .account-box input[type="text"]:-webkit-autofill:focus {
+            -webkit-box-shadow: 0 0 0 1000px rgba(30, 30, 30, 0.85) inset !important;
+            box-shadow: 0 0 0 1000px rgba(30, 30, 30, 0.85) inset !important;
+            -webkit-text-fill-color: #f1f1f1 !important;
+            transition: background-color 5000s ease-in-out 0s !important;
+        }
+
+    .account-box input::placeholder {
+        color: #aaaaaa;
+    }
+
+    .account-box button {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: none;
+        font-size: 16px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #28a745, #218838);
+        color: #fff;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        .account-box button:hover {
+            background: linear-gradient(135deg, #218838, #28a745);
+        }
+
+    .account-box a {
+        color: #66ccff;
+        font-weight: 600;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+        .account-box a:hover {
+            color: #1705f7;
+            text-decoration: underline;
+        }

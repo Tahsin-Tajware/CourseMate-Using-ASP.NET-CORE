@@ -1,5 +1,4 @@
 ﻿<!DOCTYPE html>
-
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
@@ -9,10 +8,17 @@
     <link rel="stylesheet" href="~/css/account.css" />
 </head>
 <body>
-    <div>
-        @RenderBody()
-    </div>
+    <div class="account-container">
+   
+        <video autoplay muted loop playsinline class="background-video">
+            <source src="~/images/back.mp4" type="video/mp4"> 
+            Your browser does not support the video tag.
+        </video>
 
+        <div class="account-box">
+            @RenderBody()
+        </div>
+    </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
