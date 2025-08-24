@@ -1,0 +1,97 @@
+﻿<style>
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 250px;
+        background-color: var(--secondary-color);
+        color: var(--light-color);
+        padding: 20px;
+        z-index: 1000;
+        overflow-y: auto;
+    }
+
+    .sidebar-header {
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+        .sidebar-header h3 {
+            color: var(--brand-color);
+            font-weight: bold;
+        }
+
+    .sidebar-menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+        .sidebar-menu li {
+            margin-bottom: 15px;
+        }
+
+            .sidebar-menu li a {
+                display: flex;
+                align-items: center;
+                color: var(--light-color);
+                text-decoration: none;
+                font-size: 16px;
+                padding: 10px;
+                border-radius: 5px;
+                transition: var(--transition);
+            }
+
+                .sidebar-menu li a:hover {
+                    background-color: rgba(255, 255, 255, 0.1);
+                    color: var(--brand-color);
+                }
+
+                .sidebar-menu li a i {
+                    margin-right: 10px;
+                    font-size: 1.1rem;
+                }
+</style>
+<div class="sidebar">
+    <div class="sidebar-header">
+        <h3>CourseMate</h3>
+    </div>
+    <ul class="sidebar-menu">
+        <li>
+            <a href="@Url.Action("Index", "Home")">
+                <i class="fas fa-home"></i> Home
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("AskQuestion", "Home")">
+                <i class="fas fa-question-circle"></i> Ask Question
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("MyPosts", "Home")">
+                <i class="fas fa-list"></i> My Posts
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("SavedQuestions", "Home")">
+                <i class="fas fa-star"></i> Saved Questions
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("AllTags", "Home")">
+                <i class="fas fa-tags"></i> All Tags
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("MyProfile", "Account")">
+                <i class="fas fa-user"></i> My Profile
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("About", "Home")">
+                <i class="fas fa-info-circle"></i> About
+            </a>
+        </li>
+    </ul>
+</div>
