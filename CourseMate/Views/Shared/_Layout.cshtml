@@ -3,10 +3,10 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CourseMate</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
         :root {
             --primary-color: #1e90ff;
@@ -37,12 +37,14 @@
             background-color: var(--secondary-color);
             box-shadow: var(--shadow);
             padding: 0.5rem 1rem;
-        }
-
-        .navbar-brand {
-            font-weight: 700;
-            color: var(--brand-color) !important;
-            font-size: 1.5rem;
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            position: fixed;
+            top: 0;
+            z-index: 999;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
         }
 
         .nav-link {
@@ -51,38 +53,28 @@
             transition: var(--transition);
         }
 
-            .nav-link:hover {
-                color: var(--hover-color) !important;
-            }
-
-        .container {
-            flex: 1;
+        .nav-link:hover {
+            color: var(--hover-color) !important;
         }
 
-        footer {
-            background-color: var(--secondary-color);
-            color: var(--light-color);
-            padding: 1rem 0;
-            margin-top: auto;
+        .main-content {
+            margin-left: 250px;
+            padding: 100px 20px 40px;
+            width: calc(100% - 250px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: calc(100vh - 120px);
+            text-align: center;
         }
 
-            footer a {
-                color: rgba(255, 255, 255, 0.7);
-                text-decoration: none;
-            }
-
-                footer a:hover {
-                    color: white;
-                    text-decoration: underline;
-                }
-
-        .display-4 {
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-
-        main {
-            padding-bottom: 2rem;
+        .content-grid {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 30px;
         }
 
         .placeholder-box {
@@ -90,17 +82,50 @@
             border-radius: 8px;
             box-shadow: var(--shadow);
             padding: 2rem;
-            margin-bottom: 2rem;
-            height: 300px;
+            height: 200px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.2rem;
             color: #bbb;
+            width: 250px;
+        }
+
+        footer {
+            background-color: var(--secondary-color) !important;
+            color: var(--light-color);
+            padding: 0.8rem 0;
+            margin-top: auto;
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            font-size: 14px;
+        }
+
+        footer .row {
+            align-items: center;
+            text-align: center;
+        }
+
+        footer h5 {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        footer p, footer a {
+            font-size: 13px;
         }
 
         hr.bg-white-50 {
-            border-color: rgba(255, 255, 255, 0.3);
+            margin: 8px 0;
+        }
+
+        .display-4 {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        main {
+            width: 100%;
         }
 
         /* --- AI Chat styles --- */
@@ -239,12 +264,15 @@
                     background: #e64a19;
                 }
     </style>
+
 </head>
 <body>
+    <partial name="_SidebarPartial" />
+
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CourseMate</a>
+             
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -266,23 +294,28 @@
             </div>
         </nav>
     </header>
-    <div class="container mt-5 pt-4">
+
+    <div class="main-content">
         <main role="main" class="pb-3">
             @RenderBody()
-            <div class="placeholder-box">Content Block 1</div>
-            <div class="placeholder-box">Content Block 2</div>
-            <div class="placeholder-box">Content Block 3</div>
+
+            <div class="content-grid">
+                <div class="placeholder-box">Content Block 1</div>
+                <div class="placeholder-box">Content Block 2</div>
+                <div class="placeholder-box">Content Block 3</div>
+            </div>
         </main>
     </div>
-    <footer class="bg-dark text-white py-3">
+
+    <footer class="bg-dark text-white">
         <div class="container text-center">
             <div class="row">
-                <div class="col-md-4 mb-3 mb-md-0">
-                    <h5 class="mb-3">CourseMate</h5>
-                    <p class="mb-0">Your trusted platform for learning and course management.</p>
+                <div class="col-md-4 mb-2">
+                    <h5>CourseMate</h5>
+                    <p>Your trusted platform for learning and course management.</p>
                 </div>
-                <div class="col-md-4 mb-3 mb-md-0">
-                    <h5 class="mb-3">Quick Links</h5>
+                <div class="col-md-4 mb-2">
+                    <h5>Quick Links</h5>
                     <ul class="list-unstyled">
                         <li><a href="#" class="text-white-50">Home</a></li>
                         <li><a href="#" class="text-white-50">Privacy</a></li>
@@ -290,19 +323,19 @@
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <h5 class="mb-3">Connect</h5>
-                    <p class="mb-0">Follow us on social media for updates.</p>
+                    <h5>Connect</h5>
+                    <p>Follow us on social media for updates.</p>
                 </div>
             </div>
-            <hr class="my-3 bg-white-50" />
+            <hr class="my-2 bg-white-50" />
             <div class="row">
                 <div class="col-12">
-                    <p class="mb-0">&copy; 2025 - CourseMate. All rights reserved. <a href="#" class="text-white-50">Privacy Policy</a></p>
+                    <p>&copy; 2025 - CourseMate. All rights reserved. <a href="#" class="text-white-50">Privacy Policy</a></p>
                 </div>
             </div>
         </div>
     </footer>
-   
+
     <button id="aiChatBtn">💬</button>
     <div id="aiChatPopup">
         <div id="aiChatHeader">AI Assistant</div>
@@ -312,11 +345,11 @@
             <button id="aiSend">➤</button>
         </div>
     </div>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
-       
         $("#aiChatBtn").click(function () {
             checkAuthAndToggle();
         });
@@ -329,18 +362,16 @@
                         scrollToBottom();
                     }
                 } else {
-                    window.location.href = "/Account/Login"; 
+                    window.location.href = "/Account/Login";
                 }
             });
         }
 
-   
         function scrollToBottom() {
             const $messages = $("#aiChatMessages");
             $messages.scrollTop($messages[0].scrollHeight);
         }
 
-      
         $("#aiSend").click(function () {
             checkAuthAndSend();
         });
@@ -358,27 +389,15 @@
                         scrollToBottom();
                     });
                 } else {
-                    window.location.href = "/Account/Login"; 
+                    window.location.href = "/Account/Login";
                 }
             });
         }
 
-        
         $("#aiInput").keypress(function (e) {
             if (e.which === 13) {
                 checkAuthAndSend();
                 return false;
-            }
-        });
-
-        
-        $("#aiChatMessages").on("mousewheel DOMMouseScroll", function (e) {
-            const $this = $(this);
-            if ($this.is(":hover")) {
-                e.stopPropagation();
-                let delta = e.originalEvent.wheelDelta || -e.originalEvent.detail;
-                this.scrollTop += (delta < 0 ? 1 : -1) * 30;
-                e.preventDefault();
             }
         });
     </script>
