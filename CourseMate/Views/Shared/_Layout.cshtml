@@ -102,6 +102,142 @@
         hr.bg-white-50 {
             border-color: rgba(255, 255, 255, 0.3);
         }
+
+        /* --- AI Chat styles --- */
+        #aiChatBtn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--brand-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        #aiChatPopup {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 420px;
+            height: 550px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        #aiChatHeader {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px;
+            font-weight: bold;
+            border-radius: 12px 12px 0 0;
+            text-align: center;
+            font-size: 16px;
+            height: 48px;
+        }
+
+        #aiChatMessages {
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: #555 #333;
+            height: calc(100% - 108px);
+            box-sizing: border-box;
+        }
+
+            #aiChatMessages::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            #aiChatMessages::-webkit-scrollbar-track {
+                background: #333;
+            }
+
+            #aiChatMessages::-webkit-scrollbar-thumb {
+                background: #555;
+                border-radius: 4px;
+            }
+
+                #aiChatMessages::-webkit-scrollbar-thumb:hover {
+                    background: #777;
+                }
+
+        .chat-msg {
+            padding: 10px 14px;
+            border-radius: 16px;
+            max-width: 75%;
+            line-height: 1.4;
+            display: inline-block;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            font-size: 14px;
+        }
+
+        .chat-user {
+            background: var(--primary-color);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-ai {
+            background: #333;
+            color: white;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        #aiChatInput {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            border-top: 1px solid #444;
+            background: #1a1a1a;
+            height: 60px;
+            z-index: 2;
+        }
+
+            #aiChatInput input {
+                flex: 1;
+                border: none;
+                padding: 12px;
+                background: #222;
+                color: white;
+                font-size: 14px;
+                outline: none;
+            }
+
+            #aiChatInput button {
+                border: none;
+                padding: 12px 18px;
+                background: var(--brand-color);
+                color: white;
+                cursor: pointer;
+                font-size: 16px;
+                transition: background 0.2s ease;
+            }
+
+                #aiChatInput button:hover {
+                    background: #e64a19;
+                }
     </style>
 </head>
 <body>
@@ -109,29 +245,20 @@
         <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CourseMate</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
                         @if (User.IsInRole("Admin"))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Home" asp-action="Admin">Admin</a>
-                            </li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Admin">Admin</a></li>
                         }
                         @if (User.IsInRole("User"))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Home" asp-action="User">Users</a>
-                            </li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="User">Users</a></li>
                         }
                         <partial name="_LoginPartial" />
                     </ul>
@@ -170,17 +297,91 @@
             <hr class="my-3 bg-white-50" />
             <div class="row">
                 <div class="col-12">
-                    <p class="mb-0">
-                        &copy; 2025 - CourseMate. All rights reserved.
-                        <a href="#" class="text-white-50">Privacy Policy</a>
-                    </p>
+                    <p class="mb-0">&copy; 2025 - CourseMate. All rights reserved. <a href="#" class="text-white-50">Privacy Policy</a></p>
                 </div>
             </div>
         </div>
     </footer>
+   
+    <button id="aiChatBtn">💬</button>
+    <div id="aiChatPopup">
+        <div id="aiChatHeader">AI Assistant</div>
+        <div id="aiChatMessages"></div>
+        <div id="aiChatInput">
+            <input type="text" id="aiInput" placeholder="Type a message..." />
+            <button id="aiSend">➤</button>
+        </div>
+    </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+       
+        $("#aiChatBtn").click(function () {
+            checkAuthAndToggle();
+        });
+
+        function checkAuthAndToggle() {
+            $.get("/Account/IsAuthenticated", function (data) {
+                if (data.authenticated) {
+                    $("#aiChatPopup").toggle();
+                    if ($("#aiChatPopup").is(":visible")) {
+                        scrollToBottom();
+                    }
+                } else {
+                    window.location.href = "/Account/Login"; 
+                }
+            });
+        }
+
+   
+        function scrollToBottom() {
+            const $messages = $("#aiChatMessages");
+            $messages.scrollTop($messages[0].scrollHeight);
+        }
+
+      
+        $("#aiSend").click(function () {
+            checkAuthAndSend();
+        });
+
+        function checkAuthAndSend() {
+            $.get("/Account/IsAuthenticated", function (data) {
+                if (data.authenticated) {
+                    let msg = $("#aiInput").val();
+                    if (!msg) return;
+                    $("#aiChatMessages").append(`<div class="chat-msg chat-user">${msg}</div>`);
+                    $("#aiInput").val("");
+                    scrollToBottom();
+                    $.post("/AiChat/Ask", { message: msg }, function (data) {
+                        $("#aiChatMessages").append(`<div class="chat-msg chat-ai">${data}</div>`);
+                        scrollToBottom();
+                    });
+                } else {
+                    window.location.href = "/Account/Login"; 
+                }
+            });
+        }
+
+        
+        $("#aiInput").keypress(function (e) {
+            if (e.which === 13) {
+                checkAuthAndSend();
+                return false;
+            }
+        });
+
+        
+        $("#aiChatMessages").on("mousewheel DOMMouseScroll", function (e) {
+            const $this = $(this);
+            if ($this.is(":hover")) {
+                e.stopPropagation();
+                let delta = e.originalEvent.wheelDelta || -e.originalEvent.detail;
+                this.scrollTop += (delta < 0 ? 1 : -1) * 30;
+                e.preventDefault();
+            }
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
