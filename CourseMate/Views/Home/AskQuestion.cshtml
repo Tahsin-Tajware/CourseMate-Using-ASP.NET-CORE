@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Ask Question";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Ask a Question</h2>
+
+<div class: // Ask Question Form -->
+    <form>
+        <div class="mb-3">
+            <label for="questionTitle" class="form-label">Title</label>
+            <input type="text" class="form-control" id="questionTitle" placeholder="Enter question title">
+            </h3>
+
+            <div class="mb-3">
+                <label for="questionContent" class="form-label">Content</label>
+                <textarea class="form-control" id="questionContent" rows="5" placeholder="Enter question details"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="questionTags" class="form-label">Tags</label>
+                <input type="text" class="form-control" id="questionTags" placeholder="Enter tags">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>

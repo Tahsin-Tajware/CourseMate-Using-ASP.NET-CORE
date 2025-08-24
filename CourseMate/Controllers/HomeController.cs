@@ -37,6 +37,35 @@ namespace CourseMate.Controllers
             return View();
         }
 
+        [Authorize]
+        public IActionResult AskQuestion()
+        {
+            return View();
+        }
+
+        [Authorize]
+        public IActionResult MyPosts()
+        {
+            return View();
+        }
+
+        [Authorize]
+        public IActionResult SavedQuestions()
+        {
+            return View();
+        }
+
+        [Authorize]
+        public IActionResult AllTags()
+        {
+            return View();
+        }
+
+        public IActionResult About()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
