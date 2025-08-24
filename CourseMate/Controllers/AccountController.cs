@@ -112,32 +112,32 @@ namespace CourseMate.Controllers
                 return View(model);
             }
 
-           var user = await userManager.FindByEmailAsync(model.Email);
-            if(user == null)
+            var user = await userManager.FindByEmailAsync(model.Email);
+            if (user == null)
             {
                 ModelState.AddModelError("", "User not found!");
                 return View(model);
             }
             var resetToken = await userManager.GeneratePasswordResetTokenAsync(user);
-            var resetLink = Url.Action("ChangePassword", "Account", new {email = model.Email,token = resetToken},Request.Scheme);
+            var resetLink = Url.Action("ChangePassword", "Account", new { email = model.Email, token = resetToken }, Request.Scheme);
             var subject = "Reset Password";
 
             var body = $"Please reset your password by clicking here: <a href='{resetLink}'>Reset Password</a>";
 
             await emailService.SendEmailAsync(model.Email, subject, body);
 
-            return RedirectToAction("EmailSent","Account");
+            return RedirectToAction("EmailSent", "Account");
         }
 
         [HttpGet]
-        public IActionResult ChangePassword(string email,string token)
+        public IActionResult ChangePassword(string email, string token)
         {
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(token))
             {
                 return RedirectToAction("VerifyEmail", "Account");
             }
 
-            var model = new ChangePasswordViewModel { Email = email, Token = token};
+            var model = new ChangePasswordViewModel { Email = email, Token = token };
 
             return View(model);
         }
@@ -159,7 +159,7 @@ namespace CourseMate.Controllers
                 return View(model);
             }
 
-            var resetResult = await userManager.ResetPasswordAsync(user,model.Token,model.NewPassword);
+            var resetResult = await userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
             if (!resetResult.Succeeded)
             {
                 foreach (var error in resetResult.Errors)
@@ -172,7 +172,6 @@ namespace CourseMate.Controllers
                 return RedirectToAction("Login", "Account");
             }
             return View(model);
-
         }
 
         [HttpGet]
@@ -181,13 +180,18 @@ namespace CourseMate.Controllers
             return View();
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public IActionResult IsAuthenticated()
+        {
+            return Json(new { authenticated = User.Identity?.IsAuthenticated ?? false });
         }
     }
 }
