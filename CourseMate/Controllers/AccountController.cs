@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using CourseMate.Models;
+﻿using CourseMate.Models;
 using CourseMate.Services;
 using CourseMate.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CourseMate.Controllers
 {
@@ -192,6 +193,12 @@ namespace CourseMate.Controllers
         public IActionResult IsAuthenticated()
         {
             return Json(new { authenticated = User.Identity?.IsAuthenticated ?? false });
+        }
+
+        [Authorize]
+        public IActionResult MyProfile()
+        {
+            return View();
         }
     }
 }
