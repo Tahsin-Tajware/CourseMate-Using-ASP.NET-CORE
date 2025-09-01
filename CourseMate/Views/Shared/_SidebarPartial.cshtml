@@ -1,28 +1,46 @@
-﻿<style>
-    .sidebar {
-        position: fixed; 
+﻿@{
+    var currentController = (ViewContext.RouteData.Values["controller"] ?? "").ToString();
+    var currentAction = (ViewContext.RouteData.Values["action"] ?? "").ToString();
+    Func<string, string, bool> match = (ctrl, act) =>
+        string.Equals(currentController, ctrl, System.StringComparison.OrdinalIgnoreCase) &&
+        string.Equals(currentAction, act, System.StringComparison.OrdinalIgnoreCase);
+}
+<style>
+    
+    .sidebar-header {
+        position: fixed;
         top: 0;
         left: 0;
-        min-height: 100vh; 
         width: 250px;
+        height: 60px;
         background-color: var(--secondary-color);
         color: var(--light-color);
-        padding: 20px;
-        z-index: 1000;
-        overflow-y: auto; 
-        box-sizing: border-box; 
-    }
-
-    .sidebar-header {
-        margin-bottom: 30px;
+        padding: 15px 20px;
+        font-size: 20px;
+        font-weight: bold;
+        color: var(--brand-color);
         text-align: center;
+        z-index: 1001;
     }
-
-        .sidebar-header h3 {
-            color: var(--brand-color);
-            font-weight: bold;
+    
+    .sidebar {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        width: 250px;
+        height: calc(100vh - 60px);
+        background-color: var(--secondary-color);
+        color: var(--light-color);
+        padding: 10px;
+        box-sizing: border-box;
+        overflow-y: auto;
+        transition: width 0.3s ease;
+    }
+       
+        .sidebar.collapsed {
+            width: 70px;
         }
-
+    
     .sidebar-menu {
         list-style: none;
         padding: 0;
@@ -30,7 +48,7 @@
     }
 
         .sidebar-menu li {
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
             .sidebar-menu li a {
@@ -42,57 +60,126 @@
                 padding: 10px;
                 border-radius: 5px;
                 transition: var(--transition);
+                white-space: nowrap;
+                overflow: hidden;
             }
-
-                .sidebar-menu li a:hover {
-                    background-color: rgba(255, 255, 255, 0.1);
-                    color: var(--brand-color);
-                }
 
                 .sidebar-menu li a i {
                     margin-right: 10px;
                     font-size: 1.1rem;
                 }
+    
+    .sidebar.collapsed .sidebar-menu li a span {
+        display: none;
+    }
+
+    .sidebar-menu li a:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        color: var(--brand-color);
+    }
+    
+    .sidebar-menu li a.active {
+        color: var(--brand-color);
+        background: rgba(255, 87, 34, 0.12);
+        border-left: 3px solid var(--brand-color);
+        padding-left: 7px;
+        font-weight: 600;
+    }
+    
+    #sidebarToggle {
+        position: fixed;
+        bottom: 20px;
+        left: 15px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: none;
+        background: var(--brand-color);
+        color: #fff;
+        cursor: pointer;
+        font-size: 14px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: var(--shadow);
+        transition: background 0.3s ease;
+        z-index: 1001;
+    }
+
+        #sidebarToggle:hover {
+            background: #e64a19;
+        }
 </style>
-<div class="sidebar">
-    <div class="sidebar-header">
-        <h3>CourseMate</h3>
-    </div>
+
+<div class="sidebar-header">
+    <h3>CourseMate</h3>
+</div>
+<div class="sidebar" id="sidebar">
+    <button id="sidebarToggle"><i class="fas fa-angle-left"></i></button>
     <ul class="sidebar-menu">
         <li>
-            <a href="@Url.Action("Index", "Home")">
-                <i class="fas fa-home"></i> Home
+            <a href="@Url.Action("Index", "Home")" class="@(match("Home", "Index") ? "active" : "")">
+                <i class="fas fa-home"></i> <span>Home</span>
             </a>
         </li>
         <li>
-            <a href="@Url.Action("AskQuestion", "Home")">
-                <i class="fas fa-question-circle"></i> Ask Question
+            <a href="@Url.Action("AskQuestion", "Home")" class="@(match("Home", "AskQuestion") ? "active" : "")">
+                <i class="fas fa-question-circle"></i> <span>Ask Question</span>
             </a>
         </li>
         <li>
-            <a href="@Url.Action("MyPosts", "Home")">
-                <i class="fas fa-list"></i> My Posts
+            <a href="@Url.Action("MyPosts", "Home")" class="@(match("Home", "MyPosts") ? "active" : "")">
+                <i class="fas fa-list"></i> <span>My Posts</span>
             </a>
         </li>
         <li>
-            <a href="@Url.Action("SavedQuestions", "Home")">
-                <i class="fas fa-star"></i> Saved Questions
+            <a href="@Url.Action("SavedQuestions", "Home")" class="@(match("Home", "SavedQuestions") ? "active" : "")">
+                <i class="fas fa-star"></i> <span>Saved Questions</span>
             </a>
         </li>
         <li>
-            <a href="@Url.Action("AllTags", "Home")">
-                <i class="fas fa-tags"></i> All Tags
+            <a href="@Url.Action("AllTags", "Home")" class="@(match("Home", "AllTags") ? "active" : "")">
+                <i class="fas fa-tags"></i> <span>All Tags</span>
             </a>
         </li>
         <li>
-            <a href="@Url.Action("MyProfile", "Account")">
-                <i class="fas fa-user"></i> My Profile
+            <a href="@Url.Action("MyProfile", "Account")" class="@(match("Account", "MyProfile") ? "active" : "")">
+                <i class="fas fa-user"></i> <span>My Profile</span>
             </a>
         </li>
         <li>
-            <a href="@Url.Action("About", "Home")">
-                <i class="fas fa-info-circle"></i> About
+            <a href="@Url.Action("About", "Home")" class="@(match("Home", "About") ? "active" : "")">
+                <i class="fas fa-info-circle"></i> <span>About</span>
             </a>
         </li>
     </ul>
 </div>
+
+<script>
+    (function() {
+        const sidebar = document.getElementById("sidebar");
+        const toggleBtn = document.getElementById("sidebarToggle");
+        const key = "sidebar-collapsed";
+       
+        if (localStorage.getItem(key) === "1" || window.innerWidth <= 768) {
+            sidebar.classList.add("collapsed");
+            toggleBtn.innerHTML = '<i class="fas fa-angle-right"></i>';
+        }
+        toggleBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("collapsed");
+            const isCollapsed = sidebar.classList.contains("collapsed");
+            localStorage.setItem(key, isCollapsed ? "1" : "0");
+            toggleBtn.innerHTML = isCollapsed ? '<i class="fas fa-angle-right"></i>' : '<i class="fas fa-angle-left"></i>';
+        });
+       
+        window.addEventListener("resize", () => {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.add("collapsed");
+                toggleBtn.innerHTML = '<i class="fas fa-angle-right"></i>';
+            } else if (localStorage.getItem(key) !== "1") {
+                sidebar.classList.remove("collapsed");
+                toggleBtn.innerHTML = '<i class="fas fa-angle-left"></i>';
+            }
+        });
+    })();
+</script>
