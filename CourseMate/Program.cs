@@ -28,6 +28,9 @@ builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Emai
 builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddHttpClient();
 
+builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
+
+
 var app = builder.Build();
 
 await SeedService.SeedDatabase(app.Services);

@@ -196,9 +196,67 @@ namespace CourseMate.Controllers
         }
 
         [Authorize]
-        public IActionResult MyProfile()
+        [HttpGet]
+        public async Task<IActionResult> MyProfile()
         {
-            return View();
+            var user = await userManager.GetUserAsync(User);
+
+            var model = new EditProfileViewModel
+            {
+                FullName = user.FullName,
+                Email = user.Email,
+                Bio = user.Bio,
+                ProfileImageUrl = user.ProfileImageUrl
+            };
+
+            return View(model);
         }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MyProfile(EditProfileViewModel model, [FromServices] ICloudinaryService cloudinaryService)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await userManager.GetUserAsync(User);
+
+            if (user != null)
+            {
+                user.FullName = model.FullName;
+                user.Email = model.Email;
+                user.UserName = model.Email;
+                user.Bio = model.Bio;
+
+                
+                if (model.ProfileImageFile != null)
+                {
+                    var imageUrl = await cloudinaryService.UploadImageAsync(model.ProfileImageFile);
+                    if (!string.IsNullOrEmpty(imageUrl))
+                    {
+                        user.ProfileImageUrl = imageUrl;
+                    }
+                }
+
+                var result = await userManager.UpdateAsync(user);
+
+                if (result.Succeeded)
+                {
+                    TempData["SuccessMessage"] = "Profile updated successfully!";
+                    return RedirectToAction("MyProfile");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+            }
+
+            return View(model);
+        }
+
     }
 }
