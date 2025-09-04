@@ -19,9 +19,14 @@ else
         <a asp-controller="Home" asp-action="Privacy" class="btn btn-primary btn-lg px-4">Get Started</a>
     </div>
 }
+
 <h2>Recent Posts</h2>
 
 @foreach (var post in Model)
 {
   <partial name="_PostCard" model="post" />
 }
+
+
+<partial name="_HomeContentPartial" />
+
