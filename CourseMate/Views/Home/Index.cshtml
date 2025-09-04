@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IEnumerable<CourseMate.Models.Post>
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -17,4 +18,10 @@ else
         <p class="lead mb-5">Learn about building web apps with ASP.NET Core.</p>
         <a asp-controller="Home" asp-action="Privacy" class="btn btn-primary btn-lg px-4">Get Started</a>
     </div>
+}
+<h2>Recent Posts</h2>
+
+@foreach (var post in Model)
+{
+  <partial name="_PostCard" model="post" />
 }
