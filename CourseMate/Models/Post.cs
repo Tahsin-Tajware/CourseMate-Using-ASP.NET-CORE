@@ -19,7 +19,7 @@ namespace CourseMate.Models
 
     [ForeignKey("User")]
     public string UserId { get; set; }
-
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public virtual Users User { get; set; }
     public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();

@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IEnumerable<CourseMate.Models.Post>
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -19,5 +20,13 @@ else
     </div>
 }
 
+<h2>Recent Posts</h2>
+
+@foreach (var post in Model)
+{
+  <partial name="_PostCard" model="post" />
+}
+
 
 <partial name="_HomeContentPartial" />
+
