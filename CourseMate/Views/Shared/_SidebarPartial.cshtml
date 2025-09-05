@@ -12,7 +12,7 @@
         top: 0;
         left: 0;
         width: 250px;
-        height: 60px;
+        height: 56px;
         background-color: var(--secondary-color);
         color: var(--light-color);
         padding: 15px 20px;
@@ -29,7 +29,7 @@
     
     .sidebar {
         position: fixed;
-        top: 60px;
+        top: 56px;
         left: 0;
         width: 250px;
         height: calc(100vh - 60px);
@@ -128,8 +128,9 @@
         </li>
         <li>
 
-            <a href="@Url.Action("AskQuestion", "Home")" class="@(match("Home", "AskQuestion") ? "active" : "")">
+            <a href="@Url.Action("Create", "Post")" class="@(match("Post", "Create") ? "active" : "")">
                 <i class="fas fa-question-circle"></i> <span>Ask Question</span>
+            </a>
 
         </li>
         <li>
