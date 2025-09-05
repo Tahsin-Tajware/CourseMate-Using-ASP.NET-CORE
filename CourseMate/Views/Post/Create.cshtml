@@ -1,571 +1,467 @@
-@* ===== Views/Post/Create.cshtml ===== *@
 @model CourseMate.ViewModels.CreatePostViewModel
 @{
-  ViewData["Title"] = "Create Post";
-  Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Create Post";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <style>
-  body {
-    background-color: #030303 !important;
-    color: #d7dadc !important;
-  }
-
-  .main-content {
-    background-color: #030303;
-    min-height: 100vh;
-    padding: 80px 0 20px 0;
-    /* Added top padding for fixed navbar */
-    margin-top: 0;
-  }
-
-  /* Additional padding if navbar is larger */
-  @* @media *@
-  (min-width: 768px) {
-    .main-content {
-      padding-top: 100px;
-      /* Increase if your navbar is taller */
+    :root {
+        --bg-dark: #0a0a0a;
+        --bg-darker: #121212;
+        --bg-card: #1e1e1e;
+        --border-color: #3a3a3a;
+        --text-primary: #e0e0e0;
+        --text-secondary: #a0a0a0;
+        --text-placeholder: #666;
+        --accent-color: #007bff;
+        --accent-hover: #0056b3;
+        --success-color: #28a745;
+        --danger-color: #dc3545;
     }
-  }
 
-  .container-custom {
-    max-width: 800px;
-    margin: 0 auto;
-    background-color: #1a1a1b;
-    border: 1px solid #343536;
-    border-radius: 8px;
-    overflow: hidden;
-  }
+    body {
+        background-color: var(--bg-dark) !important;
+        color: var(--text-primary) !important;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
 
-  .header-custom {
-    background-color: #1a1a1b;
-    padding: 20px 24px;
-    border-bottom: 1px solid #343536;
-  }
-
-  .header-custom h1 {
-    font-size: 1.5rem;
-    font-weight: 500;
-    color: #d7dadc;
-    margin-bottom: 8px;
-  }
-
-  .breadcrumb-custom {
-    font-size: 0.9rem;
-    color: #818384;
-  }
-
-  .breadcrumb-custom a {
-    color: #4fbcff;
-    text-decoration: none;
-  }
-
-  .breadcrumb-custom a:hover {
-    text-decoration: underline;
-  }
-
-  .form-container {
-    padding: 24px;
-  }
-
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 20px;
-  }
-
-  .form-group {
-    margin-bottom: 20px;
-  }
-
-  .form-group label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 500;
-    color: #ffffff;
-    font-size: 0.95rem;
-    font-style: ;
-  }
-
-  .form-control {
-    width: 100%;
-    padding: 12px 16px;
-    border: 1px solid #343536;
-    border-radius: 4px;
-    font-size: 0.95rem;
-    background-color: #09091d;
-    color: #ffffff;
-    transition: all 0.2s ease;
-    text-emphasis-color: "white";
-  }
-
-  .form-control:focus {
-    outline: none;
-    border-color: #4fbcff;
-    background-color: #1a1a1b;
-    box-shadow: none;
-    color: #eaeaf5;
-  }
-
-  .form-control::placeholder {
-    color: #818384;
-  }
-
-  textarea.form-control {
-    resize: vertical;
-    min-height: 120px;
-    font-family: inherit;
-    line-height: 1.5;
-  }
-
-  .post-type-selector {
-    display: flex;
-    border: 1px solid #343536;
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 20px;
-  }
-
-  .post-type-btn {
-    flex: 1;
-    padding: 12px;
-    background-color: #272729;
-    border: none;
-    color: #818384;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-  }
-
-  .post-type-btn.active {
-    background-color: #1a1a1b;
-    color: #4fbcff;
-  }
-
-  .post-type-btn:hover {
-    background-color: #1a1a1b;
-  }
-
-  .toggle-container {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px;
-    background-color: #272729;
-    border: 1px solid #343536;
-    border-radius: 4px;
-  }
-
-  .toggle-switch {
-    position: relative;
-    width: 44px;
-    height: 24px;
-  }
-
-  .toggle-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #343536;
-    transition: 0.3s;
-    border-radius: 24px;
-  }
-
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 18px;
-    width: 18px;
-    left: 3px;
-    bottom: 3px;
-    background-color: #818384;
-    transition: 0.3s;
-    border-radius: 50%;
-  }
-
-  input:checked+.slider {
-    background-color: #ff4500;
-  }
-
-  input:checked+.slider:before {
-    background-color: white;
-    transform: translateX(20px);
-  }
-
-  .toggle-label {
-    font-weight: 500;
-    color: #d7dadc;
-    font-size: 0.95rem;
-  }
-
-  .tags-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 12px;
-  }
-
-  .tag-input {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
-  }
-
-  .add-tag-btn {
-    padding: 8px 16px;
-    background-color: #0079d3;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-  }
-
-  .add-tag-btn:hover {
-    background-color: #0060a8;
-  }
-
-  .tag-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background-color: #0079d3;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.85rem;
-    font-weight: 500;
-  }
-
-  .remove-tag {
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-    font-size: 1rem;
-    line-height: 1;
-    padding: 0;
-    margin: 0;
-    opacity: 0.7;
-  }
-
-  .remove-tag:hover {
-    opacity: 1;
-  }
-
-  .button-group {
-    display: flex;
-    gap: 12px;
-    margin-top: 24px;
-    padding-top: 20px;
-    border-top: 1px solid #343536;
-  }
-
-  .btn {
-    padding: 8px 24px;
-    border: 1px solid #0079d3;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-decoration: none;
-    display: inline-block;
-    text-align: center;
-  }
-
-  .btn-primary {
-    background-color: #0079d3;
-    color: white;
-  }
-
-  .btn-primary:hover {
-    background-color: #0060a8;
-    color: white;
-  }
-
-  .btn-secondary {
-    background-color: transparent;
-    color: #0079d3;
-  }
-
-  .btn-secondary:hover {
-    background-color: rgba(0, 121, 211, 0.1);
-    color: #0079d3;
-  }
-
-  .character-count {
-    text-align: right;
-    font-size: 0.85rem;
-    color: #818384;
-    margin-top: 4px;
-  }
-
-  .required {
-    color: #ff4500;
-  }
-
-  .form-help {
-    font-size: 0.85rem;
-    color: #818384;
-    margin-top: 4px;
-  }
-
-  .text-danger {
-    color: #ff4500 !important;
-    font-size: 0.85rem;
-    margin-top: 4px;
-  }
-
-  .alert {
-    padding: 12px 16px;
-    margin-bottom: 20px;
-    border: 1px solid transparent;
-    border-radius: 4px;
-  }
-
-  .alert-success {
-    color: #0f5132;
-    background-color: #d1e7dd;
-    border-color: #badbcc;
-  }
-
-  .alert-danger {
-    color: #842029;
-    background-color: #f8d7da;
-    border-color: #f5c2c7;
-  }
-
-  @@media (max-width: 768px) {
     .main-content {
-      padding: 10px;
+        background-color: var(--bg-dark);
+        min-height: 100vh;
+        padding: 20px 0 20px 20px;
+        display: flex;
+        justify-content: flex-start;
     }
 
     .container-custom {
-      margin: 0;
-      border-radius: 0;
-      border-left: none;
-      border-right: none;
+        width: 100%;
+        max-width: 1000px;
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        margin: 20px 20px 20px 0;
+        overflow: hidden;
     }
 
-    .form-row {
-      grid-template-columns: 1fr;
-      gap: 16px;
+    .header-custom {
+        background-color: var(--bg-card);
+        padding: 24px 32px;
+        border-bottom: 1px solid var(--border-color);
+        text-align: left;
     }
+
+        .header-custom h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+    .breadcrumb-custom {
+        font-size: 1rem;
+        color: var(--text-secondary);
+        margin-top: 4px;
+    }
+
+        .breadcrumb-custom a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+            .breadcrumb-custom a:hover {
+                text-decoration: underline;
+            }
 
     .form-container {
-      padding: 16px;
+        padding: 32px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+    }
+
+    .post-type-selector {
+        display: flex;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 24px;
+        background-color: var(--bg-darker);
+        grid-column: 1 / -1;
+    }
+
+    .post-type-btn {
+        flex: 1;
+        padding: 14px 16px;
+        background-color: transparent;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 500;
+        transition: all 0.25s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+        .post-type-btn.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .post-type-btn:hover:not(.active) {
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+    .form-control {
+        width: 100%;
+        padding: 14px 16px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 1rem;
+        background-color: var(--bg-darker);
+        color: var(--text-primary);
+        transition: all 0.25s ease;
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+            background-color: var(--bg-card);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-placeholder);
+        }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 200px;
+        font-family: inherit;
+        line-height: 1.6;
+    }
+
+    .toggle-container {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 16px;
+        background-color: var(--bg-darker);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        margin-top: 24px;
+        grid-column: 1 / -1;
+    }
+
+    .toggle-switch {
+        position: relative;
+        width: 50px;
+        height: 26px;
+    }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--border-color);
+        transition: 0.3s;
+        border-radius: 26px;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: var(--text-secondary);
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+    input:checked + .slider {
+        background-color: var(--accent-color);
+    }
+
+        input:checked + .slider:before {
+            background-color: white;
+            transform: translateX(24px);
+        }
+
+    .toggle-label {
+        font-weight: 500;
+        color: var(--text-primary);
+        font-size: 1rem;
+    }
+
+    .form-help {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        margin-top: 4px;
+    }
+
+    .character-count {
+        text-align: right;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        margin-top: 4px;
+    }
+
+    .required {
+        color: var(--danger-color);
+    }
+
+    .text-danger {
+        color: var(--danger-color) !important;
+        font-size: 0.9rem;
+        margin-top: 4px;
     }
 
     .button-group {
-      flex-direction: column;
+        display: flex;
+        gap: 16px;
+        margin-top: 32px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-color);
+        grid-column: 1 / -1;
+        justify-content: flex-end;
     }
 
-    .tag-input {
-      flex-direction: column;
+    .btn {
+        padding: 12px 32px;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+        border: none;
     }
-  }
+
+    .btn-primary {
+        background-color: var(--accent-color);
+        color: white;
+    }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+    .btn-secondary {
+        background-color: transparent;
+        color: var(--accent-color);
+        border: 1px solid var(--accent-color);
+    }
+
+        .btn-secondary:hover {
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+
+    .alert {
+        padding: 16px;
+        margin-bottom: 24px;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        grid-column: 1 / -1;
+    }
+
+    .alert-success {
+        color: var(--success-color);
+        background-color: rgba(40, 167, 69, 0.1);
+        border: 1px solid rgba(40, 167, 69, 0.2);
+    }
+
+    @@media (max-width: 992px) {
+        .form-container
+
+    {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+
+    .container-custom {
+        margin: 20px;
+    }
+
+    .button-group {
+        justify-content: stretch;
+    }
+
+    .btn {
+        flex: 1;
+        text-align: center;
+    }
+
+    }
 </style>
 
 <div class="main-content">
-  <div class="container-custom">
-    <div class="header-custom">
-      <h1>Create a post</h1>
-      <div class="breadcrumb-custom">
-        <a asp-controller="Home" asp-action="Index">CourseMate</a> • Create Post
-      </div>
-    </div>
-
-    <div class="form-container">
-      @if (TempData["SuccessMessage"] != null)
-      {
-        <div class="alert alert-success">
-          @TempData["SuccessMessage"]
-        </div>
-      }
-
-      <div class="post-type-selector">
-        <button type="button" class="post-type-btn active">📝 Text</button>
-        <button type="button" class="post-type-btn">🔗 Link</button>
-        <button type="button" class="post-type-btn">❓ Poll</button>
-      </div>
-
-      <form asp-action="Create" method="post" id="createPostForm">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-        
-
-        <div class="form-group">
-          <label asp-for="Title">
-            Title <span class="required">*</span>
-          </label>
-          <input asp-for="Title" class="form-control" placeholder="An interesting title" maxlength="255" />
-          <div class="character-count">
-            <span id="titleCount">0</span>/255 characters
-          </div>
-          <span asp-validation-for="Title" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-          <label asp-for="Content">Text (optional)</label>
-          <textarea asp-for="Content" class="form-control" placeholder="Text (optional)" rows="6"></textarea>
-          <div class="form-help">Add more details, ask questions, or share your thoughts</div>
-          <span asp-validation-for="Content" class="text-danger"></span>
-        </div>
-<div class="form-row">
-          <div class="form-group ">
-            <label asp-for="CourseName">
-              Course Name <span class="required">*</span>
-            </label>
-            <input  asp-for="CourseName" class="form-control" placeholder="e.g., Data Structures and Algorithms" />
-            <span asp-validation-for="CourseName" class="text-danger"></span>
-          </div>
-          <div class="form-group">
-            <label asp-for="CourseCode">
-              Course Code <span class="required">*</span>
-            </label>
-            <input asp-for="CourseCode" class="form-control" placeholder="e.g., CS 201, MATH 101" />
-            <span asp-validation-for="CourseCode" class="text-danger"></span>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label asp-for="Varsity">
-            University/Varsity Name <span class="required">*</span>
-          </label>
-          <input asp-for="Varsity" class="form-control" placeholder="e.g., University of Dhaka, BUET, NSU" />
-          <span asp-validation-for="Varsity" class="text-danger"></span>
-        </div>
-        
-
-        <div class="form-group">
-          <div class="toggle-container">
-            <label class="toggle-switch">
-              <input asp-for="IsAnonymous" type="checkbox" />
-              <span class="slider"></span>
-            </label>
-            <div>
-              <div class="toggle-label">Post anonymously</div>
-              <div class="form-help">Your username will be hidden</div>
+    <div class="container-custom">
+        <div class="header-custom">
+            <h1>Create a Post</h1>
+            <div class="breadcrumb-custom">
+                <a asp-controller="Home" asp-action="Index">CourseMate</a> • Create Post
             </div>
-          </div>
         </div>
 
-        <div class="button-group">
-          <a asp-controller="Post" asp-action="Index" class="btn btn-secondary">Cancel</a>
-          <button type="submit" class="btn btn-primary">Post</button>
+        <div class="form-container">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["SuccessMessage"]
+                </div>
+            }
+
+            <div class="post-type-selector">
+                <button type="button" class="post-type-btn active">
+                    <i class="fas fa-align-left"></i> Text
+                </button>
+                <button type="button" class="post-type-btn">
+                    <i class="fas fa-link"></i> Link
+                </button>
+                <button type="button" class="post-type-btn">
+                    <i class="fas fa-poll"></i> Poll
+                </button>
+            </div>
+
+            <form asp-action="Create" method="post" id="createPostForm">
+                <div asp-validation-summary="ModelOnly" class="text-danger" style="grid-column: 1 / -1;"></div>
+
+                <!-- Left Column -->
+                <div>
+                    <div class="form-group">
+                        <label asp-for="Title">
+                            Title <span class="required">*</span>
+                        </label>
+                        <input asp-for="Title" class="form-control" placeholder="An interesting title" maxlength="255" />
+                        <div class="character-count">
+                            <span id="titleCount">0</span>/255 characters
+                        </div>
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Content">Text (optional)</label>
+                        <textarea asp-for="Content" class="form-control" placeholder="Text (optional)"></textarea>
+                        <div class="form-help">Add more details, ask questions, or share your thoughts</div>
+                        <span asp-validation-for="Content" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div>
+                    <div class="form-group">
+                        <label asp-for="CourseName">
+                            Course Name <span class="required">*</span>
+                        </label>
+                        <input asp-for="CourseName" class="form-control" placeholder="e.g., Data Structures and Algorithms" />
+                        <span asp-validation-for="CourseName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="CourseCode">
+                            Course Code <span class="required">*</span>
+                        </label>
+                        <input asp-for="CourseCode" class="form-control" placeholder="e.g., CS 201, MATH 101" />
+                        <span asp-validation-for="CourseCode" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Varsity">
+                            University/Varsity Name <span class="required">*</span>
+                        </label>
+                        <input asp-for="Varsity" class="form-control" placeholder="e.g., University of Dhaka, BUET, NSU" />
+                        <span asp-validation-for="Varsity" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Toggle and Buttons (Full Width) -->
+                <div class="toggle-container">
+                    <label class="toggle-switch">
+                        <input asp-for="IsAnonymous" type="checkbox" />
+                        <span class="slider"></span>
+                    </label>
+                    <div>
+                        <div class="toggle-label">Post anonymously</div>
+                        <div class="form-help">Your username will be hidden</div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <a asp-controller="Post" asp-action="Index" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Post</button>
+                </div>
+            </form>
         </div>
-      </form>
     </div>
-  </div>
 </div>
 
 <script>
-  let tags = [];
+    document.addEventListener('DOMContentLoaded', function() {
+        // Character counter for title
+        const titleInput = document.querySelector('input[name="Title"]');
+        const titleCounter = document.getElementById('titleCount');
 
-  // Character counter for title
-  document.addEventListener('DOMContentLoaded', function () {
-    const titleInput = document.querySelector('input[name="Title"]');
-    const titleCounter = document.getElementById('titleCount');
+        titleInput.addEventListener('input', function() {
+            const count = this.value.length;
+            titleCounter.textContent = count;
 
-    titleInput.addEventListener('input', function () {
-      const count = this.value.length;
-      titleCounter.textContent = count;
+            if (count > 200) {
+                titleCounter.style.color = 'var(--danger-color)';
+            } else {
+                titleCounter.style.color = 'var(--text-secondary)';
+            }
+        });
 
-      if (count > 200) {
-        titleCounter.style.color = '#ff4500';
-      } else {
-        titleCounter.style.color = '#818384';
-      }
+        // Initialize counter
+        titleCounter.textContent = titleInput.value.length;
+
+        // Post type selector
+        document.querySelectorAll('.post-type-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.post-type-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
     });
-
-    // Initialize counter
-    titleCounter.textContent = titleInput.value.length;
-  });
-
-  // Post type selector
-  document.querySelectorAll('.post-type-btn').forEach(btn => {
-    btn.addEventListener('click', function () {
-      document.querySelectorAll('.post-type-btn').forEach(b => b.classList.remove('active'));
-      this.classList.add('active');
-    });
-  });
-
-  // Add tag functionality
-  function addTag() {
-    const tagInput = document.getElementById('tagInput');
-    const tagValue = tagInput.value.trim().toLowerCase();
-
-    if (tagValue && !tags.includes(tagValue) && tags.length < 10) {
-      tags.push(tagValue);
-      renderTags();
-      updateHiddenTagInputs();
-      tagInput.value = '';
-    }
-  }
-
-  // Remove tag functionality
-  function removeTag(tagToRemove) {
-    tags = tags.filter(tag => tag !== tagToRemove);
-    renderTags();
-    updateHiddenTagInputs();
-  }
-
-  // Render tags
-  function renderTags() {
-    const container = document.getElementById('tagsContainer');
-    container.innerHTML = '';
-
-    tags.forEach(tag => {
-      const tagElement = document.createElement('span');
-      tagElement.className = 'tag-item';
-      tagElement.innerHTML = `
-                ${tag}
-                <button type="button" class="remove-tag" onclick="removeTag('${tag}')">&times;</button>
-            `;
-      container.appendChild(tagElement);
-    });
-  }
-
-  // Update hidden inputs for additional tags
-  function updateHiddenTagInputs() {
-    const container = document.getElementById('hiddenTagInputs');
-    container.innerHTML = '';
-
-    tags.forEach((tag, index) => {
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = `AdditionalTags[${index}]`;
-      input.value = tag;
-      container.appendChild(input);
-    });
-  }
-
-  // Add tag on Enter key
-  document.getElementById('tagInput').addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      addTag();
-    }
-  });
 </script>
 
 @section Scripts {
-  @{
-    await Html.RenderPartialAsync("_ValidationScriptsPartial");
-  }
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

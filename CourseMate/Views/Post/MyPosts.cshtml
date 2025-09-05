@@ -212,8 +212,18 @@
                                 }
                             </h2>
                             <div class="post-meta">
-                                Posted by: @(post.IsAnonymous ? "Anonymous" : post.User?.UserName) on @post.CreatedAt.ToString("g")
+                                Posted by:
+                                @if (post.IsAnonymous)
+                                {
+                                    <span>Anonymous</span>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("ViewProfile", "Post", new { id = post.User.Id })" class="post-link">@post.User?.FullName</a>
+                                }
+                                on @post.CreatedAt.ToString("g")
                             </div>
+
                             <div class="post-content">
                                 @post.Content
                             </div>

@@ -4,6 +4,7 @@ using CourseMate.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace CourseMate.Controllers
 {
@@ -22,12 +23,14 @@ namespace CourseMate.Controllers
             this.emailService = emailService;
         }
 
+        // Login GET method
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
 
+        // Login POST method
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
@@ -48,12 +51,14 @@ namespace CourseMate.Controllers
             return View(model);
         }
 
+        // Register GET method
         [HttpGet]
         public IActionResult Register()
         {
             return View();
         }
 
+        // Register POST method
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
@@ -98,12 +103,14 @@ namespace CourseMate.Controllers
             return View(model);
         }
 
+        // Verify Email GET method
         [HttpGet]
         public IActionResult VerifyEmail()
         {
             return View();
         }
 
+        // Verify Email POST method
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> VerifyEmail(VerifyEmailViewModel model)
@@ -130,6 +137,7 @@ namespace CourseMate.Controllers
             return RedirectToAction("EmailSent", "Account");
         }
 
+        // Change Password GET method
         [HttpGet]
         public IActionResult ChangePassword(string email, string token)
         {
@@ -143,6 +151,7 @@ namespace CourseMate.Controllers
             return View(model);
         }
 
+        // Change Password POST method
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
@@ -175,12 +184,14 @@ namespace CourseMate.Controllers
             return View(model);
         }
 
+        // Email Sent GET method
         [HttpGet]
         public IActionResult EmailSent()
         {
             return View();
         }
 
+        // Logout POST method
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
@@ -189,12 +200,14 @@ namespace CourseMate.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        // IsAuthenticated method to check if the user is logged in
         [HttpGet]
         public IActionResult IsAuthenticated()
         {
             return Json(new { authenticated = User.Identity?.IsAuthenticated ?? false });
         }
 
+        // My Profile GET method
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> MyProfile()
@@ -212,6 +225,7 @@ namespace CourseMate.Controllers
             return View(model);
         }
 
+        // My Profile POST method
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -231,7 +245,6 @@ namespace CourseMate.Controllers
                 user.UserName = model.Email;
                 user.Bio = model.Bio;
 
-                
                 if (model.ProfileImageFile != null)
                 {
                     var imageUrl = await cloudinaryService.UploadImageAsync(model.ProfileImageFile);
@@ -258,5 +271,26 @@ namespace CourseMate.Controllers
             return View(model);
         }
 
+        
+        [HttpGet]
+        public async Task<IActionResult> ViewProfile(string id)
+        {
+            var user = await userManager.FindByIdAsync(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var model = new EditProfileViewModel
+            {
+                FullName = user.FullName,
+                Email = user.Email,
+                Bio = user.Bio,
+                ProfileImageUrl = user.ProfileImageUrl
+            };
+
+            return View(model);
+        }
     }
 }
