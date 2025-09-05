@@ -52,7 +52,7 @@
 
     <!-- Post Title -->
     <h3 class="post-title">
-      <a asp-controller="Posts" asp-action="Details" asp-route-id="@Model.Id" class="title-link">
+      <a asp-controller="Post" asp-action="Details" asp-route-id="@Model.Id" class="title-link">
         @Model.Title
       </a>
     </h3>
@@ -67,7 +67,7 @@
 
     <!-- Action Bar -->
     <div class="action-bar">
-      <a asp-controller="Posts" asp-action="Details" asp-route-id="@Model.Id" class="action-btn comments-btn">
+      <a asp-controller="Post" asp-action="Details" asp-route-id="@Model.Id" class="action-btn comments-btn">
         <i class="far fa-comment-alt"></i>
         @Model.Comments?.Count() Comments
       </a>

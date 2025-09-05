@@ -33,6 +33,8 @@ namespace CourseMate.Models
 
     public virtual ICollection<Vote> Votes { get; set; } = new List<Vote>();
 
-    
-  }
+    public bool IsAnonymous { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    }
 }

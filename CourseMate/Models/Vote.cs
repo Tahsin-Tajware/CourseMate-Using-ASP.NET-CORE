@@ -21,5 +21,9 @@ namespace CourseMate.Models
     public string VotableType { get; set; }   // "Post" or "Comment"
 
     public int Value { get; set; }  // e.g. 1 = upvote, -1 = downvote
-  }
+
+    [NotMapped]
+    public bool IsUpvote => Value == 1;
+
+    }
 }

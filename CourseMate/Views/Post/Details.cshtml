@@ -1,0 +1,240 @@
+﻿@model CourseMate.Models.Post
+@{
+    ViewData["Title"] = "Post Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .main-content {
+        background-color: #030303;
+        min-height: 100vh;
+        padding: 80px 20px 20px;
+        margin-left: 250px;
+        transition: margin-left 0.3s ease;
+    }
+
+    .container-custom {
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 0 40px;
+    }
+
+    .header-custom {
+        background-color: #1a1a1b;
+        padding: 30px 60px;
+        border-radius: 12px 12px 0 0;
+        margin-bottom: 30px;
+    }
+
+        .header-custom h1 {
+            font-size: 36px;
+            font-weight: 600;
+            color: #e4e6eb;
+            margin-bottom: 12px;
+        }
+
+    .breadcrumb-custom {
+        font-size: 1.1rem;
+        color: #818384;
+    }
+
+        .breadcrumb-custom a {
+            color: #4fbcff;
+            text-decoration: none;
+        }
+
+            .breadcrumb-custom a:hover {
+                text-decoration: underline;
+            }
+
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        background-color: #1a1a1b;
+        border-radius: 12px;
+        padding: 30px 60px;
+    }
+
+    .post-container {
+        background-color: #121212;
+        border: 1px solid #343536;
+        border-radius: 12px;
+        padding: 30px;
+        transition: all 0.3s ease;
+        margin-bottom: 30px;
+    }
+
+        .post-container:hover {
+            background-color: #1a1a1b;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+    .post-title {
+        color: #e4e6eb;
+        font-size: 24px;
+        margin-bottom: 14px;
+        font-weight: 500;
+    }
+
+        .post-title a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+            .post-title a:hover {
+                color: #4fbcff;
+            }
+
+    .post-meta {
+        color: #9a9c9e;
+        margin-bottom: 16px;
+        font-size: 1rem;
+    }
+
+    .post-content {
+        color: #d7dadc;
+        line-height: 1.8;
+        margin-bottom: 20px;
+        font-size: 17px;
+    }
+
+    .tags-container {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .tag-item {
+        background-color: #0079d3;
+        color: #f1f1f1;
+        padding: 8px 18px;
+        border-radius: 16px;
+        font-size: 1rem;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    .vote-count {
+        color: #d7dadc;
+        font-size: 1rem;
+        margin-top: 15px;
+        display: flex;
+        align-items: center;
+        gap: 25px;
+        justify-content: center;
+    }
+
+    .vote-group {
+        display: flex;
+        align-items: center;
+        gap: 2px; /* less space between arrow and number */
+    }
+
+    .vote-arrow {
+        cursor: pointer;
+        font-size: 22px;
+        font-weight: bold;
+        color: #0079d3;
+        transition: color 0.2s ease;
+    }
+
+        .vote-arrow:hover {
+            color: #4fbcff;
+        }
+
+    .comments-section {
+        background-color: #09091d;
+        border-radius: 12px;
+        padding: 30px 60px;
+        margin-top: 30px;
+    }
+
+        .comments-section h3 {
+            color: white;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+    .comment {
+        border-bottom: 1px solid #343536;
+        padding: 20px 0;
+    }
+
+        .comment:last-child {
+            border-bottom: none;
+        }
+
+    .comment-content {
+        color: #d7dadc;
+        line-height: 1.7;
+        margin-bottom: 10px;
+        font-size: 17px;
+    }
+
+    .comment-meta {
+        color: #818384;
+        font-size: 15px;
+    }
+</style>
+
+<div class="main-content">
+    <div class="container-custom">
+        <div class="header-custom">
+            <h1>Details</h1>
+            <div class="breadcrumb-custom">
+                <a asp-controller="Home" asp-action="Index">CourseMate</a> •
+                <a asp-controller="Post" asp-action="Index">Posts</a> • Details
+            </div>
+        </div>
+        <div class="form-container">
+            <div class="post-container">
+                <h1 class="post-title">@Model.Title</h1>
+                <div class="post-meta">
+                    Posted by: @(Model.IsAnonymous ? "Anonymous" : Model.User?.UserName) on @Model.CreatedAt.ToString("g")
+                </div>
+                <div class="post-content">
+                    @Model.Content
+                </div>
+                <div class="tags-container">
+                    @foreach (var tag in Model.Tags)
+                    {
+                        <span class="tag-item">@tag.CourseName (@tag.CourseCode) - @tag.Varsity</span>
+                    }
+                </div>
+                <div class="vote-count">
+                    <div class="vote-group">
+                        <span class="vote-arrow">↑</span>
+                        <span>@Model.Votes.Count(v => v.IsUpvote)</span>
+                    </div>
+                    <div class="vote-group">
+                        <span class="vote-arrow">↓</span>
+                        <span>@Model.Votes.Count(v => !v.IsUpvote)</span>
+                    </div>
+                </div>
+                <div class="comments-section">
+                    <h3>Comments</h3>
+                    @if (Model.Comments.Any())
+                    {
+                        foreach (var comment in Model.Comments)
+                        {
+                            <div class="comment">
+                                <div class="comment-content">@comment.Content</div>
+                                <div class="comment-meta">
+                                    Posted by: @(comment.IsAnonymous ? "Anonymous" : comment.User?.UserName)
+                                    on @comment.CreatedAt.ToString("g")
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p>No comments yet.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
