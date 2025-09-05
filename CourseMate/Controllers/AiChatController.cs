@@ -12,7 +12,7 @@ namespace CourseMate.Controllers
     public class AiChatController : Controller
     {
         private readonly HttpClient _httpClient;
-        private readonly string _apiKey = "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";
+        private readonly string _apiKey = "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";
 
         public AiChatController(HttpClient httpClient)
         {

@@ -1,6 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity;
 @inject SignInManager<Users> signInManager;
-
 <ul class="navbar-nav ms-auto align-items-center">
     @if (signInManager.IsSignedIn(User))
     {
