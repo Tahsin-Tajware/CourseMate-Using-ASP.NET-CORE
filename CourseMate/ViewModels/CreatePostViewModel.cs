@@ -28,7 +28,11 @@ namespace CourseMate.ViewModels
     [Display(Name = "Post Anonymously")]
     public bool IsAnonymous { get; set; }
 
-    // Additional tags beyond the course tag
-    // public List<string> AdditionalTags { get; set; } = new List<string>();
-  }
+
+    [Display(Name = "Course Photo (optional)")]
+    public IFormFile Photo { get; set; }
+
+        // Additional tags beyond the course tag
+        // public List<string> AdditionalTags { get; set; } = new List<string>();
+    }
 }
