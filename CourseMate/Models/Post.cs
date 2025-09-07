@@ -4,6 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CourseMate.Models
 {
+  public enum PostStatus
+  {
+    pending, accepted, rejected
+  }
   public class Post
   {
     [Key]
@@ -20,6 +24,7 @@ namespace CourseMate.Models
     [ForeignKey("User")]
     public string UserId { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public PostStatus Status { get; set; } = PostStatus.pending;
     public virtual Users User { get; set; }
     public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
