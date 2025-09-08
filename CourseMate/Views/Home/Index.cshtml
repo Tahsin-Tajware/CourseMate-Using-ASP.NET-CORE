@@ -22,7 +22,11 @@
             <div class="posts-list">
                 @foreach (var post in Model)
                 {
-                    <partial name="_PostCard" model="post" />
+                    @if (post.Status == PostStatus.accepted)
+                    {
+                        <partial name="_PostCard" model="post" />
+                    }
+
                 }
             </div>
         }
