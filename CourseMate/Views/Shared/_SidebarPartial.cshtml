@@ -4,6 +4,8 @@
     Func<string, string, bool> match = (ctrl, act) =>
         string.Equals(currentController, ctrl, System.StringComparison.OrdinalIgnoreCase) &&
         string.Equals(currentAction, act, System.StringComparison.OrdinalIgnoreCase);
+
+    var isAdmin = User.IsInRole("Admin");
 }
 <style>
     
@@ -160,6 +162,25 @@
                 <i class="fas fa-info-circle"></i> <span>About</span>
             </a>
         </li>
+        @if (isAdmin)
+        {
+            
+            <li>
+                <a href="@Url.Action("UserControl", "Admin")" class="@(match("Admin", "UserControl") ? "active" : "")">
+                    <i class="fas fa-users-cog"></i> <span>User Control</span>
+                </a>
+            </li>
+            <li>
+                <a href="@Url.Action("PendingPosts", "Post")" class="@(match("Post", "PendingPosts") ? "active" : "")">
+                    <i class="fas fa-tasks"></i> <span>Post Control</span>
+                </a>
+            </li>
+            <li>
+                <a href="@Url.Action("CommentControl", "Admin")" class="@(match("Admin", "CommentControl") ? "active" : "")">
+                    <i class="fas fa-comments"></i> <span>Comments Control</span>
+                </a>
+            </li>
+        }
     </ul>
 </div>
 

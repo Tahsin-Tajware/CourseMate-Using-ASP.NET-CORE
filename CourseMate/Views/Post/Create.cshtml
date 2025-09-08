@@ -263,7 +263,7 @@
         border-radius: 10px;
         font-size: 1rem;
         background-color: #242424;
-        color: var(--text-secondary); /* Light grey text color */
+        color: var(--text-secondary);
         transition: all 0.3s ease;
         box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
     }
@@ -273,7 +273,7 @@
         resize: vertical;
         font-family: inherit;
         line-height: 1.6;
-        color: var(--text-primary); /* White text color for textarea */
+        color: var(--text-primary);
     }
 
     .form-control:focus {
@@ -281,17 +281,17 @@
         border-color: var(--accent-color);
         box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.1);
         background-color: var(--bg-card);
-        color: var(--text-primary); /* White text color when focused */
+        color: var(--text-primary);
     }
 
     .form-control::placeholder {
-        color: var(--text-secondary); /* Light grey placeholder color */
+        color: var(--text-secondary);
         font-weight: 400;
     }
 
     .form-control.has-value {
         background-color: var(--bg-card);
-        color: var(--text-primary); /* White text color when has value */
+        color: var(--text-primary);
     }
 
     textarea.form-control {
@@ -640,6 +640,36 @@
             .form-group input[type="file"]::file-selector-button:hover {
                 background-color: var(--accent-hover);
             }
+    /* Loading Spinner */
+    .loading-spinner {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: var(--accent-color);
+        animation: spin 1s ease-in-out infinite;
+    }
+    @@keyframes spin {
+        to
+
+    {
+        transform: rotate(360deg);
+    }
+
+    }
 </style>
 <div class="main-content">
     <div class="container-custom">
@@ -741,6 +771,9 @@
         </div>
     </div>
 </div>
+<div class="loading-spinner" id="loadingSpinner">
+    <div class="spinner"></div>
+</div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const titleInput = document.querySelector('input[name="Title"]');
@@ -784,7 +817,29 @@
         formElements.forEach((el, index) => {
             el.style.animationDelay = `${index * 0.05}s`;
         });
+
+        // Handle form submission
+        const form = document.getElementById('createPostForm');
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const spinner = document.getElementById('loadingSpinner');
+            spinner.style.display = 'flex';
+
+            // Submit the form after a delay to simulate processing
+            setTimeout(() => {
+                form.submit();
+            }, 2000);
+        });
     });
+
+    function showFileName(input) {
+        const fileNameSpan = document.getElementById('file-name');
+        if (input.files && input.files[0]) {
+            fileNameSpan.textContent = input.files[0].name;
+        } else {
+            fileNameSpan.textContent = '';
+        }
+    }
 </script>
 @section Scripts {
     @{
