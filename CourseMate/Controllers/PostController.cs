@@ -22,6 +22,140 @@ namespace CourseMate.Controllers
             _userManager = userManager;
         }
 
+        // POST: Post/AddComment
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddComment(int postId, string content, bool isAnonymous, int? parentId = null)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                return RedirectToAction("Details", new { id = postId });
+            }
+
+            var comment = new Comment
+            {
+                Content = content,
+                IsAnonymous = isAnonymous,
+                PostId = postId,
+                UserId = user?.Id,
+                ParentId = parentId,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.Comments.Add(comment);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Comment added successfully!";
+            return RedirectToAction("Details", new { id = postId });
+        }
+
+        // POST: Post/DeleteComment
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteComment(int commentId)
+        {
+            var comment = await _context.Comments
+                .Include(c => c.Replies)
+                .FirstOrDefaultAsync(c => c.Id == commentId);
+
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            // Remove replies
+            _context.Comments.RemoveRange(comment.Replies);
+            _context.Comments.Remove(comment);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Comment deleted successfully!";
+            return RedirectToAction("Details", new { id = comment.PostId });
+        }
+
+        // POST: Post/UpdateComment
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateComment(int commentId, string content)
+        {
+            var comment = await _context.Comments.FindAsync(commentId);
+
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            comment.Content = content;
+            _context.Update(comment);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Comment updated successfully!";
+            return RedirectToAction("Details", new { id = comment.PostId });
+        }
+
+        // POST: Post/Vote
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Vote(int id, string votableType, int value)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            // Check if the vote is for a valid post or comment
+            if (votableType != "Post" && votableType != "Comment")
+            {
+                return BadRequest("Invalid votable type");
+            }
+
+            // Fetch the existing vote if it exists
+            var existingVote = await _context.Votes
+                .FirstOrDefaultAsync(v => v.UserId == user.Id && v.VotableId == id && v.VotableType == votableType);
+
+            if (existingVote == null)
+            {
+                // If no vote exists, create a new vote
+                var vote = new Vote
+                {
+                    UserId = user.Id,
+                    VotableId = id,
+                    VotableType = votableType,
+                    Value = value
+                };
+                _context.Votes.Add(vote);
+            }
+            else
+            {
+                // If the vote exists and is the same, remove it (toggle)
+                if (existingVote.Value == value)
+                {
+                    _context.Votes.Remove(existingVote);
+                }
+                else
+                {
+                    // Otherwise update it
+                    existingVote.Value = value;
+                    _context.Votes.Update(existingVote);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            // Redirect back to the post
+            if (votableType == "Post")
+            {
+                return RedirectToAction("Details", new { id });
+            }
+            else
+            {
+                var comment = await _context.Comments.FindAsync(id);
+                return RedirectToAction("Details", new { id = comment.PostId });
+            }
+        }
+
         // GET: Post/Create
         public IActionResult Create()
         {
@@ -90,6 +224,12 @@ namespace CourseMate.Controllers
                 .Include(p => p.User)
                 .Include(p => p.Tags)
                 .Include(p => p.Comments)
+                    .ThenInclude(c => c.User)
+                .Include(p => p.Comments)
+                    .ThenInclude(c => c.Replies)
+                        .ThenInclude(r => r.User)
+                .Include(p => p.Comments)
+                    .ThenInclude(c => c.Votes)
                 .Include(p => p.Votes)
                 .Where(p => p.Status == PostStatus.accepted)
                 .FirstOrDefaultAsync(p => p.Id == id);
@@ -98,6 +238,10 @@ namespace CourseMate.Controllers
             {
                 return NotFound();
             }
+
+            // Get current user to check their votes
+            var currentUser = await _userManager.GetUserAsync(User);
+            ViewBag.CurrentUserId = currentUser?.Id;
 
             return View(post);
         }

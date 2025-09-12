@@ -1,12 +1,14 @@
-﻿@model CourseMate.Models.Post
+﻿@using CourseMate.Models.ViewModels
+@model CourseMate.Models.Post
 @{
     ViewData["Title"] = "Post Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <style>
     :root {
         --bg-primary: #0a0a0a;
-        --bg-secondary: rgba(18, 18, 18, 0.5); 
+        --bg-secondary: rgba(18, 18, 18, 0.5);
         --bg-tertiary: #242424;
         --text-primary: #e4e6eb;
         --text-secondary: #d7dadc;
@@ -16,25 +18,30 @@
         --border: #343536;
         --tag-bg: #0079d3;
         --vote-active: #ff4500;
-        --username-color: #4fbcff; 
-        --datetime-color: #818384; 
+        --username-color: #4fbcff;
+        --datetime-color: #818384;
+        --comment-bg: #1a1a1b;
+        --comment-hover: #272729;
+        --reply-bg: #1e1e1f;
     }
 
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
     }
 
     .main-content {
-        background-color: var(--bg-primary);
         min-height: 100vh;
         padding: 30px 20px;
-        margin-left: 130px; 
-        width: calc(100% - 130px); 
+        margin-left: 130px;
+        width: calc(100% - 130px);
         transition: margin-left 0.3s ease;
     }
 
     .container-custom {
         width: 100%;
+        max-width: 1200px;
         margin: 0 auto;
         padding: 0;
     }
@@ -78,14 +85,14 @@
         flex-direction: column;
         background-color: var(--bg-tertiary);
         border-radius: 10px;
-        padding: 20px 100px;
+        padding: 20px 40px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         width: 100%;
         margin-top: 15px;
     }
 
     .post-container {
-        background-color: var(--bg-secondary); 
+        background-color: var(--bg-secondary);
         border: 1px solid var(--border);
         border-radius: 12px;
         padding: 30px;
@@ -95,7 +102,7 @@
     }
 
         .post-container:hover {
-            background-color: rgba(26, 26, 27, 0.7); 
+            background-color: rgba(26, 26, 27, 0.7);
             transform: translateY(-2px);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
@@ -108,16 +115,6 @@
         text-align: center;
     }
 
-        .post-title a {
-            color: inherit;
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-
-            .post-title a:hover {
-                color: var(--accent-hover);
-            }
-
     .post-meta {
         color: var(--text-tertiary);
         margin-bottom: 20px;
@@ -126,12 +123,12 @@
     }
 
         .post-meta .username {
-            color: var(--username-color); 
+            color: var(--username-color);
             font-weight: 600;
         }
 
         .post-meta .datetime {
-            color: var(--datetime-color); 
+            color: var(--datetime-color);
         }
 
     .post-content {
@@ -187,6 +184,8 @@
         font-weight: bold;
         color: var(--text-tertiary);
         transition: all 0.2s ease;
+        background: none;
+        border: none;
     }
 
         .vote-arrow:hover {
@@ -204,7 +203,7 @@
     .comments-section {
         background-color: var(--bg-primary);
         border-radius: 12px;
-        padding: 30px 60px;
+        padding: 30px;
         margin-top: 30px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         width: 100%;
@@ -217,82 +216,277 @@
             text-align: center;
         }
 
-    .comment {
-        border-bottom: 1px solid var(--border);
-        padding: 20px 0;
-        width: 100%;
+    .comments-container {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-top: 20px;
     }
 
-        .comment:last-child {
-            border-bottom: none;
+    .comment {
+        background-color: var(--comment-bg);
+        border-radius: 8px;
+        padding: 16px;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+    }
+
+        .comment:hover {
+            border-color: var(--border);
+            background-color: var(--comment-hover);
+        }
+
+    .comment-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+        font-weight: bold;
+        color: white;
+    }
+
+    .comment-meta {
+        flex: 1;
+    }
+
+        .comment-meta .username {
+            color: var(--username-color);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .comment-meta .datetime {
+            color: var(--datetime-color);
+            font-size: 12px;
         }
 
     .comment-content {
         color: var(--text-secondary);
-        line-height: 1.7;
-        margin-bottom: 10px;
-        font-size: 17px;
-    }
-
-    .comment-meta {
-        color: var(--text-tertiary);
+        line-height: 1.6;
+        margin-bottom: 12px;
         font-size: 15px;
     }
 
-        .comment-meta .username {
-            color: var(--username-color); 
-            font-weight: 600;
+    .comment-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .action-btn {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        background: none;
+        border: none;
+        color: var(--text-tertiary);
+        cursor: pointer;
+        font-size: 13px;
+        padding: 4px 8px;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+    }
+
+        .action-btn:hover {
+            background-color: var(--bg-tertiary);
+            color: var(--text-secondary);
         }
 
-        .comment-meta .datetime {
-            color: var(--datetime-color); 
+    .vote-count-comment {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: var(--text-tertiary);
+    }
+
+    .reply-container {
+        margin-top: 12px;
+        padding-left: 20px;
+        border-left: 2px solid var(--border);
+    }
+
+    .comment-replies {
+        margin-top: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .reply-form {
+        margin-top: 16px;
+        padding: 16px;
+        background-color: var(--reply-bg);
+        border-radius: 8px;
+        display: none;
+    }
+
+        .reply-form.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
         }
 
-    .comment-form {
-        margin-top: 30px;
+    .comment-form-main {
+        margin-top: 20px;
+        margin-bottom: 30px;
         width: 100%;
     }
 
-        .comment-form textarea {
+        .comment-form-main textarea,
+        .reply-form textarea {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border-radius: 8px;
             border: 1px solid var(--border);
             background-color: var(--bg-secondary);
             color: var(--text-secondary);
-            font-size: 16px;
+            font-size: 14px;
             resize: vertical;
-            min-height: 120px;
-            margin-bottom: 1px;
+            min-height: 100px;
+            margin-bottom: 12px;
+            transition: border-color 0.2s ease;
         }
 
-            .comment-form textarea:focus {
+            .comment-form-main textarea:focus,
+            .reply-form textarea:focus {
                 outline: none;
                 border-color: var(--accent);
             }
 
-        .comment-form button {
-            background-color: var(--accent);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-            .comment-form button:hover {
-                background-color: var(--accent-hover);
-            }
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
     .anonymous-checkbox {
         display: flex;
         align-items: center;
-        gap: 5px;
-        margin-bottom: 15px;
+        gap: 8px;
         color: var(--text-secondary);
+        font-size: 14px;
+    }
+
+    .btn-submit {
+        background-color: var(--accent);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+        .btn-submit:hover {
+            background-color: var(--accent-hover);
+        }
+
+    .no-comments {
+        text-align: center;
+        color: var(--text-tertiary);
+        padding: 30px;
+        font-style: italic;
+    }
+
+    .comment-collapse-btn {
+        margin-top: 8px;
+        background: none;
+        border: none;
+        color: var(--accent);
+        font-size: 13px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+        .comment-collapse-btn:hover {
+            text-decoration: underline;
+        }
+
+    .comment-replies.collapsed {
+        display: none;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Nested comment styling */
+    .nested-comment {
+        margin-left: 30px;
+        border-left: 2px solid var(--border);
+        padding-left: 15px;
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+
+        .nested-comment .nested-comment {
+            margin-left: 25px;
+            background-color: rgba(0, 0, 0, 0.15);
+        }
+
+            .nested-comment .nested-comment .nested-comment {
+                margin-left: 20px;
+                background-color: rgba(0, 0, 0, 0.2);
+            }
+
+                .nested-comment .nested-comment .nested-comment .nested-comment {
+                    margin-left: 15px;
+                    background-color: rgba(0, 0, 0, 0.25);
+                }
+
+                    .nested-comment .nested-comment .nested-comment .nested-comment .nested-comment {
+                        margin-left: 10px;
+                        border-left: 1px solid var(--border);
+                        background-color: rgba(0, 0, 0, 0.3);
+                    }
+
+    @@media (max-width: 768px) {
+        .main-content {
+            margin-left: 0;
+            width: 100%;
+            padding: 15px;
+        }
+
+        .form-container {
+            padding: 15px;
+        }
+
+        .header-custom {
+            padding: 20px;
+        }
+
+        .nested-comment {
+            margin-left: 15px;
+        }
+
+            .nested-comment .nested-comment {
+                margin-left: 10px;
+            }
+
+                .nested-comment .nested-comment .nested-comment {
+                    margin-left: 5px;
+                }
     }
 </style>
 
@@ -322,46 +516,83 @@
                 </div>
                 <div class="vote-count">
                     <div class="vote-group">
-                        <span class="vote-arrow">↑</span>
-                        <span>@Model.Votes.Count(v => v.IsUpvote)</span>
+                        <form asp-action="Vote" method="post">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <input type="hidden" name="votableType" value="Post" />
+                            <button type="submit" name="value" value="1" class="vote-arrow @(Model.Votes.Any(v => v.UserId == ViewBag.CurrentUserId && v.Value == 1) ? "upvoted" : "")">↑</button>
+                        </form>
+                        <span>@Model.Votes.Count(v => v.Value == 1)</span>
                     </div>
                     <div class="vote-group">
-                        <span class="vote-arrow">↓</span>
-                        <span>@Model.Votes.Count(v => !v.IsUpvote)</span>
+                        <form asp-action="Vote" method="post">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <input type="hidden" name="votableType" value="Post" />
+                            <button type="submit" name="value" value="-1" class="vote-arrow @(Model.Votes.Any(v => v.UserId == ViewBag.CurrentUserId && v.Value == -1) ? "downvoted" : "")">↓</button>
+                        </form>
+                        <span>@Model.Votes.Count(v => v.Value == -1)</span>
                     </div>
                 </div>
             </div>
+
             <div class="comments-section">
-                <h3>Comments</h3>
-                @if (Model.Comments.Any())
-                {
-                    foreach (var comment in Model.Comments)
-                    {
-                        <div class="comment">
-                            <div class="comment-content">@comment.Content</div>
-                            <div class="comment-meta">
-                                Posted by: <span class="username">@(comment.IsAnonymous ? "Anonymous" : comment.User?.FullName)</span> on <span class="datetime">@comment.CreatedAt.ToString("g")</span>
+                <h3>Comments (@Model.Comments.Count)</h3>
+
+                <!-- Main Comment Form at the top -->
+                <div class="comment-form-main">
+                    <h4>Add a comment</h4>
+                    <form asp-action="AddComment" method="post">
+                        <input type="hidden" name="postId" value="@Model.Id" />
+                        <textarea name="content" required placeholder="Write your comment here..."></textarea>
+                        <div class="form-actions">
+                            <div class="anonymous-checkbox">
+                                <input type="checkbox" id="IsAnonymous" name="isAnonymous" />
+                                <label for="IsAnonymous">Post as Anonymous</label>
                             </div>
+                            <button type="submit" class="btn-submit">Post Comment</button>
                         </div>
-                    }
-                }
-                else
-                {
-                    <p style="text-align: center; color: var(--text-tertiary);">No comments yet.</p>
-                }
-                <!-- Comment Form -->
-                <div class="comment-form">
-                    <form asp-controller="Post" asp-action="AddComment" method="post">
-                        <input type="hidden" asp-for="Id" />
-                        <textarea name="Content" placeholder="Add a comment..." required></textarea>
-                        <div class="anonymous-checkbox">
-                            <input type="checkbox" id="IsAnonymous" name="IsAnonymous" />
-                            <label for="IsAnonymous">Post as Anonymous</label>
-                        </div>
-                        <button type="submit">Post Comment</button>
                     </form>
+                </div>
+
+                <div class="comments-container">
+                    @if (Model.Comments.Any(c => c.ParentId == null))
+                    {
+                        foreach (var comment in Model.Comments.Where(c => c.ParentId == null))
+                        {
+                            @await Html.PartialAsync("_Comment", new CommentViewModel { Comment = comment, CurrentUserId = ViewBag.CurrentUserId, PostId = Model.Id })
+                        }
+                    }
+                    else
+                    {
+                        <p class="no-comments">No comments yet. Be the first to comment!</p>
+                    }
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    function toggleReplyForm(commentId) {
+        const form = document.getElementById(`reply-form-${commentId}`);
+        form.classList.toggle('active');
+
+        // Focus on the textarea when form is shown
+        if (form.classList.contains('active')) {
+            const textarea = form.querySelector('textarea');
+            setTimeout(() => textarea.focus(), 100);
+        }
+    }
+
+    function toggleReplies(button, commentId) {
+        const repliesContainer = document.getElementById(`replies-${commentId}`);
+        repliesContainer.classList.toggle('collapsed');
+
+        // Update button text based on state
+        const replyCount = button.getAttribute('data-reply-count');
+        if (repliesContainer.classList.contains('collapsed')) {
+            button.innerHTML = `<span>Show replies (${replyCount})</span>`;
+        } else {
+            button.innerHTML = `<span>Hide replies (${replyCount})</span>`;
+        }
+    }
+</script>
