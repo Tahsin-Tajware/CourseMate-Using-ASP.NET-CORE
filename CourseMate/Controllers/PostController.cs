@@ -261,7 +261,27 @@ namespace CourseMate.Controllers
             return View(posts);
         }
 
-        [Authorize]
+    public async Task<IActionResult> PostsByTag(int tagId)
+    {
+      var tag = await _context.Tags.FirstOrDefaultAsync(t => t.Id == tagId);
+      if (tag == null) return NotFound();
+
+      var posts = await _context.Posts
+          .Where(p => p.Tags.Any(t => t.Id == tagId))
+          .Where(p => p.Status == PostStatus.accepted)
+          .Include(p => p.Tags)
+          .Include(p => p.User)
+          .Include(p => p.Votes)
+          .Include(p => p.Comments)
+          .ToListAsync();
+
+      ViewBag.TagName = $"{tag.CourseCode} - {tag.CourseName} ({tag.Varsity})";
+
+      return View(posts);
+    }
+
+
+    [Authorize]
         public async Task<IActionResult> MyPosts()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);

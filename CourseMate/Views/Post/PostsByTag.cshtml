@@ -1,0 +1,68 @@
+@model IEnumerable<CourseMate.Models.Post>
+
+<div class="posts-container">
+  <div class="header-section">
+    <h2>Posts tagged with <span class="highlight">r/@ViewBag.TagName</span></h2>
+    <p>@Model.Count() post@(Model.Count() == 1 ? "" : "s") found</p>
+    
+  </div>
+
+  <div class="posts-list">
+    @foreach (var post in Model)
+    {
+      <partial name="_PostCard" model="post" />
+    }
+  </div>
+</div>
+
+<style>
+  .posts-container {
+    display: flex;
+    flex-direction: column;
+    @* align-items: flex-start; *@
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    background: rgba(18, 18, 18, 0.8);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    color: #e0e0e0;
+  }
+
+  .header-section {
+    margin-bottom: 20px;
+  }
+
+  .header-section h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  .highlight {
+    color: #0079d3;
+  }
+
+  .header-section p {
+    font-size: 14px;
+    color: #aaa;
+    margin: 5px 0 10px;
+  }
+
+  .back-link {
+    font-size: 14px;
+    text-decoration: none;
+    color: #ccc;
+    transition: color 0.2s ease;
+  }
+
+  .back-link:hover {
+    color: #0079d3;
+  }
+
+  .posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+</style>
