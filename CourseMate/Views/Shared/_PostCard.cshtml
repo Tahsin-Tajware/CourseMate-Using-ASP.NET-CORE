@@ -1,281 +1,286 @@
 @model CourseMate.Models.Post
 <div class="container">
-    <div class="reddit-post-card">
-     
-        <div class="content-section">
-           
-            <div class="post-meta">
-                @if (Model.Tags?.Any() == true)
-                {
-                    @foreach (var tag in Model.Tags)
-                    {
-                        <span class="course-tag">r/@tag.CourseCode</span>
-                    }
-                }
-                <span class="meta-separator">•</span>
-                <span class="post-time">Posted by</span>
-                @if (Model.IsAnonymous)
-                {
-                    <span id="username" class="username">u/Anonymous</span>
-                }
-                else
-                {
-                    <span id="username" class="username">
-                        u/
-                        <span class="username-hover" data-user-id="@Model.User?.Id" onclick="goToProfile(this)">
-                            @Model.User?.FullName
-                        </span>
-                    </span>
-                }
-                <span class="meta-separator">•</span>
-            </div>
+  <div class="reddit-post-card">
 
-            <div class="question-row">
-                <div class="question-main">
-                   
-                    <h3 class="post-title">
-                        <a asp-controller="Post" asp-action="Details" asp-route-id="@Model.Id" class="title-link">
-                            @Model.Title
-                        </a>
-                    </h3>
-                   
-                    @if (!string.IsNullOrEmpty(Model.Content))
-                    {
-                        <div class="post-preview">
-                            @(Model.Content.Length > 200 ? Model.Content.Substring(0, 200) + "..." : Model.Content)
-                        </div>
-                    }
-                </div>
-            </div>
+    <div class="content-section">
 
-      
-            <div class="action-bar">
-                <div class="vote-container-horizontal">
-                    <button class="vote-btn vote-up" title="Upvote">
-                        <i class="fas fa-arrow-up"></i>
-                    </button>
-                    <span class="vote-score">
-                        @{
-                            var upvotes = Model.Votes?.Count(v => v.Value == 1) ?? 0;
-                            var downvotes = Model.Votes?.Count(v => v.Value == -1) ?? 0;
-                            var netScore = upvotes - downvotes;
-                        }
-                        @netScore
-                    </span>
-                    <button class="vote-btn vote-down" title="Downvote">
-                        <i class="fas fa-arrow-down"></i>
-                    </button>
-                </div>
-                <a asp-controller="Post" asp-action="Details" asp-route-id="@Model.Id" class="action-btn comments-btn">
-                    <i class="far fa-comment-alt"></i> @Model.Comments?.Count() Comments
-                </a>
-                <button class="action-btn share-btn">
-                    <i class="fas fa-share"></i> Share
-                </button>
-                <button class="action-btn save-btn">
-                    <i class="far fa-bookmark"></i> Save
-                </button>
-                <button class="action-btn more-btn">
-                    <i class="fas fa-ellipsis-h"></i>
-                </button>
+      <div class="post-meta">
+        @if (Model.Tags?.Any() == true)
+        {
+          @foreach (var tag in Model.Tags)
+          {
+            <a asp-controller="Post" asp-action="PostsByTag" asp-route-tagId="@tag.Id" class="course-tag">
+              @tag.CourseName (@tag.CourseCode) - @tag.Varsity
+            </a>
+          }
+        }
+        <span class="meta-separator">•</span>
+        <span class="post-time">Posted by</span>
+        @if (Model.IsAnonymous)
+        {
+          <span id="username" class="username">u/Anonymous</span>
+        }
+        else
+        {
+          <span id="username" class="username">
+            u/
+            <span class="username-hover" data-user-id="@Model.User?.Id" onclick="goToProfile(this)">
+              @Model.User?.FullName
+            </span>
+          </span>
+        }
+        <span class="meta-separator">•</span>
+      </div>
+
+      <div class="question-row">
+        <div class="question-main">
+
+          <h3 class="post-title">
+            <a asp-controller="Post" asp-action="Details" asp-route-id="@Model.Id" class="title-link">
+              @Model.Title
+            </a>
+          </h3>
+
+          @if (!string.IsNullOrEmpty(Model.Content))
+          {
+            <div class="post-preview">
+              @(Model.Content.Length > 200 ? Model.Content.Substring(0, 200) + "..." : Model.Content)
             </div>
+          }
         </div>
+      </div>
+
+
+      <div class="action-bar">
+        <div class="vote-container-horizontal">
+          <button class="vote-btn vote-up" title="Upvote">
+            <i class="fas fa-arrow-up"></i>
+          </button>
+          <span class="vote-score">
+            @{
+              var upvotes = Model.Votes?.Count(v => v.Value == 1) ?? 0;
+              var downvotes = Model.Votes?.Count(v => v.Value == -1) ?? 0;
+              var netScore = upvotes - downvotes;
+            }
+            @netScore
+          </span>
+          <button class="vote-btn vote-down" title="Downvote">
+            <i class="fas fa-arrow-down"></i>
+          </button>
+        </div>
+        <a asp-controller="Post" asp-action="Details" asp-route-id="@Model.Id" class="action-btn comments-btn">
+          <i class="far fa-comment-alt"></i> @Model.Comments?.Count() Comments
+        </a>
+        <button class="action-btn share-btn">
+          <i class="fas fa-share"></i> Share
+        </button>
+        <button class="action-btn save-btn">
+          <i class="far fa-bookmark"></i> Save
+        </button>
+        <button class="action-btn more-btn">
+          <i class="fas fa-ellipsis-h"></i>
+        </button>
+      </div>
     </div>
+  </div>
 </div>
 
 <style>
-    .container {
-        display: flex;
-        justify-content: center;
-        margin-top: 10px;
-    }
+  .container {
 
-    .reddit-post-card {
-        width: 95%;
-        margin: 0 20px;
-        padding: 0;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        border: 1px solid #333;
-        background: rgba(18,18,18,0.6);
-        display: flex;
-        align-items: flex-start;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    @* margin-top: 10px; *@
+    align-items: center;
+    align-items: flex-start;
+  }
 
-        .reddit-post-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-        }
+  .reddit-post-card {
+    width: 95%;
+    margin: 0 20px;
+    padding: 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border: 1px solid #333;
+    background: rgba(18, 18, 18, 0.6);
+    display: flex;
+    align-items: flex-start;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
 
-    .content-section {
-        flex: 1;
-        padding: 20px;
-        color: #e0e0e0;
-        border-radius: 12px;
-        background: transparent;
-    }
+  .reddit-post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  }
 
-    .post-meta {
-        font-size: 12px;
-        color: #818384;
-        margin-bottom: 12px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        flex-wrap: wrap;
-    }
+  .content-section {
+    flex: 1;
+    padding: 20px;
+    color: #e0e0e0;
+    border-radius: 12px;
+    background: transparent;
+  }
 
-    .course-tag {
-        color: #0079d3;
-        font-weight: 700;
-    }
+  .post-meta {
+    font-size: 12px;
+    color: #818384;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
 
-    .username {
-        font-weight: 500;
-        color: darkgreen;
-    }
+  .course-tag {
+    color: #0079d3;
+    font-weight: 700;
+  }
 
-    .meta-separator,
-    .post-time {
-        color: #818384;
-    }
+  .username {
+    font-weight: 500;
+    color: darkgreen;
+  }
+
+  .meta-separator,
+  .post-time {
+    color: #818384;
+  }
 
 
-    .username-hover {
-        font-weight: 500;
-        color: darkgreen;
-        cursor: pointer;
-        transition: transform 0.3s ease, color 0.3s ease;
-    }
+  .username-hover {
+    font-weight: 500;
+    color: darkgreen;
+    cursor: pointer;
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
 
-        .username-hover:hover {
-            transform: scale(2.1);
-            color: #4fbcff; 
-        }
+  .username-hover:hover {
+    transform: scale(2.1);
+    color: #4fbcff;
+  }
 
-    .question-row {
-        display: flex;
-        align-items: flex-start;
-        margin-bottom: 14px;
-    }
+  .question-row {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 14px;
+  }
 
-    .question-main {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-    }
+  .question-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
 
-    .post-title {
-        font-size: 20px;
-        font-weight: 600;
-        line-height: 1.4;
-        color: #fff;
-        margin: 0 0 8px 0;
-        text-align: left;
-    }
+  .post-title {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: #fff;
+    margin: 0 0 8px 0;
+    text-align: left;
+  }
 
-    .title-link {
-        color: inherit;
-        text-decoration: none;
-    }
+  .title-link {
+    color: inherit;
+    text-decoration: none;
+  }
 
-        .title-link:hover {
-            color: #0079d3;
-        }
+  .title-link:hover {
+    color: #0079d3;
+  }
 
-    .post-preview {
-        font-size: 14px;
-        color: #ccc;
-        line-height: 1.6;
-        margin-bottom: 6px;
-        text-align: left;
-    }
+  .post-preview {
+    font-size: 14px;
+    color: #ccc;
+    line-height: 1.6;
+    margin-bottom: 6px;
+    text-align: left;
+  }
 
-    .action-bar {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        margin-top: 16px;
-        padding-top: 12px;
-    }
+  .action-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 16px;
+    padding-top: 12px;
+  }
 
-    .vote-container-horizontal {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
+  .vote-container-horizontal {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
 
-    .vote-btn {
-        background: none;
-        border: none;
-        padding: 8px;
-        cursor: pointer;
-        border-radius: 50%;
-        color: #818384;
-        font-size: 16px;
-        transition: all 0.2s ease;
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+  .vote-btn {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 50%;
+    color: #818384;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-        .vote-btn:hover {
-            background: #333;
-        }
+  .vote-btn:hover {
+    background: #333;
+  }
 
-    .vote-up:hover {
-        color: #ff8b60;
-    }
+  .vote-up:hover {
+    color: #ff8b60;
+  }
 
-    .vote-down:hover {
-        color: #9494ff;
-    }
+  .vote-down:hover {
+    color: #9494ff;
+  }
 
-    .vote-score {
-        font-weight: bold;
-        font-size: 16px;
-        color: #ccc;
-        min-width: 20px;
-    }
+  .vote-score {
+    font-weight: bold;
+    font-size: 16px;
+    color: #ccc;
+    min-width: 20px;
+  }
 
-    .action-btn {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        padding: 8px 12px;
-        font-size: 14px;
-        font-weight: 500;
-        color: #818384;
-        background: none;
-        border: none;
-        border-radius: 20px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
+  .action-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #818384;
+    background: none;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
 
-        .action-btn:hover {
-            background: #333;
-            color: #ccc;
-        }
+  .action-btn:hover {
+    background: #333;
+    color: #ccc;
+  }
 
-    .comments-btn i,
-    .share-btn i,
-    .save-btn i,
-    .more-btn i {
-        color: #818384;
-    }
-
+  .comments-btn i,
+  .share-btn i,
+  .save-btn i,
+  .more-btn i {
+    color: #818384;
+  }
 </style>
 
 <script>
-  
-    function goToProfile(element) {
-        var userId = element.getAttribute('data-user-id');
-        if (userId) {
-            window.location.href = '/Account/ViewProfile/' + userId; 
-        }
+
+  function goToProfile(element) {
+    var userId = element.getAttribute('data-user-id');
+    if (userId) {
+      window.location.href = '/Account/ViewProfile/' + userId;
     }
+  }
 </script>
