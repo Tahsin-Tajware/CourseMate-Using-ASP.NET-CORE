@@ -53,21 +53,31 @@
 
       <div class="action-bar">
         <div class="vote-container-horizontal">
-          <button class="vote-btn vote-up" title="Upvote">
+    <form asp-controller="Vote" asp-action="Vote" method="post">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <input type="hidden" name="votableType" value="Post" />
+        <button type="submit" name="value" value="1" class="vote-btn vote-up" title="Upvote"
+            @(Model.UserId == ViewBag.CurrentUserId ? "disabled" : "")>
             <i class="fas fa-arrow-up"></i>
-          </button>
-          <span class="vote-score">
-            @{
-              var upvotes = Model.Votes?.Count(v => v.Value == 1) ?? 0;
-              var downvotes = Model.Votes?.Count(v => v.Value == -1) ?? 0;
-              var netScore = upvotes - downvotes;
-            }
-            @netScore
-          </span>
-          <button class="vote-btn vote-down" title="Downvote">
+        </button>
+    </form>
+    <span class="vote-score">
+        @{
+            var upvotes = Model.Votes?.Count(v => v.Value == 1) ?? 0;
+            var downvotes = Model.Votes?.Count(v => v.Value == -1) ?? 0;
+            var netScore = upvotes - downvotes;
+        }
+        @netScore
+    </span>
+    <form asp-controller="Vote" asp-action="Vote" method="post">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <input type="hidden" name="votableType" value="Post" />
+        <button type="submit" name="value" value="-1" class="vote-btn vote-down" title="Downvote"
+            @(Model.UserId == ViewBag.CurrentUserId ? "disabled" : "")>
             <i class="fas fa-arrow-down"></i>
-          </button>
-        </div>
+        </button>
+    </form>
+</div>
         <a asp-controller="Post" asp-action="Details" asp-route-id="@Model.Id" class="action-btn comments-btn">
           <i class="far fa-comment-alt"></i> @Model.Comments?.Count() Comments
         </a>

@@ -181,6 +181,23 @@ namespace CourseMate.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
             ViewBag.CurrentUserId = currentUser?.Id;
 
+            // Set current user's vote status for the post
+            if (currentUser != null)
+            {
+                var userVote = post.Votes.FirstOrDefault(v => v.UserId == currentUser.Id);
+                ViewBag.UserPostVote = userVote?.Value ?? 0;
+            }
+
+            // Set current user's vote status for each comment
+            if (currentUser != null)
+            {
+                foreach (var comment in post.Comments)
+                {
+                    var userVote = comment.Votes.FirstOrDefault(v => v.UserId == currentUser.Id);
+                    comment.CurrentUserVote = userVote?.Value ?? 0;
+                }
+            }
+
             return View(post);
         }
 
@@ -199,27 +216,27 @@ namespace CourseMate.Controllers
             return View(posts);
         }
 
-    public async Task<IActionResult> PostsByTag(int tagId)
-    {
-      var tag = await _context.Tags.FirstOrDefaultAsync(t => t.Id == tagId);
-      if (tag == null) return NotFound();
+        public async Task<IActionResult> PostsByTag(int tagId)
+        {
+            var tag = await _context.Tags.FirstOrDefaultAsync(t => t.Id == tagId);
+            if (tag == null) return NotFound();
 
-      var posts = await _context.Posts
-          .Where(p => p.Tags.Any(t => t.Id == tagId))
-          .Where(p => p.Status == PostStatus.accepted)
-          .Include(p => p.Tags)
-          .Include(p => p.User)
-          .Include(p => p.Votes)
-          .Include(p => p.Comments)
-          .ToListAsync();
+            var posts = await _context.Posts
+                .Where(p => p.Tags.Any(t => t.Id == tagId))
+                .Where(p => p.Status == PostStatus.accepted)
+                .Include(p => p.Tags)
+                .Include(p => p.User)
+                .Include(p => p.Votes)
+                .Include(p => p.Comments)
+                .ToListAsync();
 
-      ViewBag.TagName = $"{tag.CourseCode} - {tag.CourseName} ({tag.Varsity})";
+            ViewBag.TagName = $"{tag.CourseCode} - {tag.CourseName} ({tag.Varsity})";
 
-      return View(posts);
-    }
+            return View(posts);
+        }
 
 
-    [Authorize]
+        [Authorize]
         public async Task<IActionResult> MyPosts()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);

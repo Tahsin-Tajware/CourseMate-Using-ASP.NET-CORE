@@ -29,20 +29,24 @@
         </button>
 
         <div class="vote-count-comment">
-            <form asp-action="Vote" method="post" style="display: inline;">
-                <input type="hidden" name="id" value="@comment.Id" />
-                <input type="hidden" name="votableType" value="Comment" />
-                <button type="submit" name="value" value="1" class="vote-arrow @(comment.Votes.Any(v => v.UserId == Model.CurrentUserId && v.Value == 1) ? "upvoted" : "")">↑</button>
-            </form>
-            <span>@comment.Upvotes</span>
+    <form asp-controller="Vote" asp-action="Vote" method="post" style="display: inline;">
+        <input type="hidden" name="id" value="@comment.Id" />
+        <input type="hidden" name="votableType" value="Comment" />
+        <button type="submit" name="value" value="1" 
+            class="vote-arrow @(Model.CurrentUserVote == 1 ? "upvoted" : "")"
+            @(comment.UserId == Model.CurrentUserId ? "disabled" : "")>↑</button>
+    </form>
+    <span>@comment.Upvotes</span>
 
-            <form asp-action="Vote" method="post" style="display: inline;">
-                <input type="hidden" name="id" value="@comment.Id" />
-                <input type="hidden" name="votableType" value="Comment" />
-                <button type="submit" name="value" value="-1" class="vote-arrow @(comment.Votes.Any(v => v.UserId == Model.CurrentUserId && v.Value == -1) ? "downvoted" : "")">↓</button>
-            </form>
-            <span>@comment.Downvotes</span>
-        </div>
+    <form asp-controller="Vote" asp-action="Vote" method="post" style="display: inline;">
+        <input type="hidden" name="id" value="@comment.Id" />
+        <input type="hidden" name="votableType" value="Comment" />
+        <button type="submit" name="value" value="-1" 
+            class="vote-arrow @(Model.CurrentUserVote == -1 ? "downvoted" : "")"
+            @(comment.UserId == Model.CurrentUserId ? "disabled" : "")>↓</button>
+    </form>
+    <span>@comment.Downvotes</span>
+</div>
     </div>
 
     <!-- Reply Form (initially hidden) -->

@@ -1,52 +1,62 @@
-.btn, .nav-link {
-    transition: var(--transition);
+.btn,
+.nav-link {
+  transition: var(--transition);
 }
 
 .btn-primary {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-    color: #fff;
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #fff;
 }
 
-    .btn-primary:hover {
-        background-color: var(--hover-color);
-        border-color: var(--hover-color);
-    }
+.btn-primary:hover {
+  background-color: var(--hover-color);
+  border-color: var(--hover-color);
+}
 
 .card {
-    background-color: var(--card-bg);
-    border: none;
-    border-radius: 10px;
-    box-shadow: var(--shadow);
-    transition: var(--transition);
-    color: var(--dark-color);
+  background-color: var(--card-bg);
+  border: none;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  color: var(--dark-color);
 }
 
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-    }
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
 
 body:not(.loaded) {
-    opacity: 0;
-    transition: opacity 0.5s ease;
+  opacity: 0;
+  transition: opacity 0.5s ease;
 }
 
 body.loaded {
-    opacity: 1;
+  opacity: 1;
 }
 
 @media (max-width: 768px) {
-    .navbar-nav {
-        justify-content: flex-end; 
-    }
+  .navbar-nav {
+    justify-content: flex-end;
+  }
 
-    .nav-item {
-        margin: 0.5rem 0;
-    }
+  .nav-item {
+    margin: 0.5rem 0;
+  }
 }
 
 .sidebar a.active:focus {
-    outline: 2px solid var(--brand-color);
-    outline-offset: 2px;
+  outline: 2px solid var(--brand-color);
+  outline-offset: 2px;
+}
+
+.vote-arrow:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.vote-arrow:disabled:hover {
+  color: inherit;
 }

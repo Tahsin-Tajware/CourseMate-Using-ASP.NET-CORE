@@ -521,5 +521,11 @@
         });
     </script>
     @await RenderSectionAsync("Scripts", required: false)
+    @if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
 </body>
 </html>

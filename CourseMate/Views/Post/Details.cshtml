@@ -520,26 +520,29 @@
             </span>
           }
         </div>
-        <div class="vote-count">
-          <div class="vote-group">
-            <form asp-action="Vote" method="post">
-              <input type="hidden" name="id" value="@Model.Id" />
-              <input type="hidden" name="votableType" value="Post" />
-              <button type="submit" name="value" value="1"
-                class="vote-arrow @(Model.Votes.Any(v => v.UserId == ViewBag.CurrentUserId && v.Value == 1) ? "upvoted" : "")">↑</button>
-            </form>
-            <span>@Model.Votes.Count(v => v.Value == 1)</span>
-          </div>
-          <div class="vote-group">
-            <form asp-action="Vote" method="post">
-              <input type="hidden" name="id" value="@Model.Id" />
-              <input type="hidden" name="votableType" value="Post" />
-              <button type="submit" name="value" value="-1"
-                class="vote-arrow @(Model.Votes.Any(v => v.UserId == ViewBag.CurrentUserId && v.Value == -1) ? "downvoted" : "")">↓</button>
-            </form>
-            <span>@Model.Votes.Count(v => v.Value == -1)</span>
-          </div>
-        </div>
+        <!-- Update post voting forms -->
+<div class="vote-count">
+    <div class="vote-group">
+        <form asp-controller="Vote" asp-action="Vote" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <input type="hidden" name="votableType" value="Post" />
+            <button type="submit" name="value" value="1" 
+                class="vote-arrow @(ViewBag.UserPostVote == 1 ? "upvoted" : "")"
+                @(Model.UserId == ViewBag.CurrentUserId ? "disabled" : "")>↑</button>
+        </form>
+        <span>@Model.Votes.Count(v => v.Value == 1)</span>
+    </div>
+    <div class="vote-group">
+        <form asp-controller="Vote" asp-action="Vote" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <input type="hidden" name="votableType" value="Post" />
+            <button type="submit" name="value" value="-1" 
+                class="vote-arrow @(ViewBag.UserPostVote == -1 ? "downvoted" : "")"
+                @(Model.UserId == ViewBag.CurrentUserId ? "disabled" : "")>↓</button>
+        </form>
+        <span>@Model.Votes.Count(v => v.Value == -1)</span>
+    </div>
+   </div>
       </div>
 
       <div class="comments-section">
