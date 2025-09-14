@@ -337,5 +337,81 @@ namespace CourseMate.Controllers
             TempData["SuccessMessage"] = "Post deleted successfully.";
             return RedirectToAction(nameof(PendingPosts));
         }
+
+
+
+
+
+
+        // GET: Post/Search
+        [AllowAnonymous]
+        public async Task<IActionResult> Search(string searchString, string searchType = "all", int page = 1, int pageSize = 10)
+        {
+            ViewBag.SearchString = searchString;
+            ViewBag.SearchType = searchType;
+            ViewBag.CurrentPage = page;
+
+            if (string.IsNullOrEmpty(searchString))
+            {
+                ViewBag.TotalPages = 0;
+                ViewBag.TotalCount = 0;
+                return View(new List<Post>());
+            }
+
+            // Base query for accepted posts
+            var query = _context.Posts
+                .Include(p => p.User)
+                .Include(p => p.Tags)
+                .Include(p => p.Comments)
+                .Include(p => p.Votes)
+                .Where(p => p.Status == PostStatus.accepted)
+                .AsQueryable();
+
+            // Apply search filters based on type
+            switch (searchType.ToLower())
+            {
+                case "title":
+                    query = query.Where(p => p.Title.Contains(searchString));
+                    break;
+                case "content":
+                    query = query.Where(p => p.Content.Contains(searchString));
+                    break;
+                case "course":
+                    query = query.Where(p => p.Tags.Any(t =>
+                        t.CourseName.Contains(searchString) ||
+                        t.CourseCode.Contains(searchString) ||
+                        t.Varsity.Contains(searchString)));
+                    break;
+                case "comments":
+                    query = query.Where(p => p.Comments.Any(c =>
+                        c.Content.Contains(searchString) && !c.IsAnonymous));
+                    break;
+                default: // "all"
+                    query = query.Where(p =>
+                        p.Title.Contains(searchString) ||
+                        p.Content.Contains(searchString) ||
+                        p.Tags.Any(t =>
+                            t.CourseName.Contains(searchString) ||
+                            t.CourseCode.Contains(searchString) ||
+                            t.Varsity.Contains(searchString)) ||
+                        p.Comments.Any(c =>
+                            c.Content.Contains(searchString) && !c.IsAnonymous));
+                    break;
+            }
+
+            // Get total count for pagination
+            var totalCount = await query.CountAsync();
+            ViewBag.TotalCount = totalCount;
+            ViewBag.TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            // Apply pagination
+            var posts = await query
+                .OrderByDescending(p => p.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return View(posts);
+        }
     }
 }

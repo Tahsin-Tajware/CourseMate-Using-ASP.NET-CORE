@@ -64,7 +64,7 @@
             top: 0;
             z-index: 999;
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             align-items: center;
             transition: margin-left 0.3s ease;
             height: 56px;
@@ -95,11 +95,9 @@
             padding: 120px 20px 40px;
             width: calc(100% - 250px);
             display: flex;
-            @* justify-content: center; *@
             align-items: center;
             flex-direction: column;
             min-height: calc(100vh - 140px);
-            @* text-align: center; *@
             flex: 1 0 auto;
             transition: margin-left 0.3s ease;
         }
@@ -161,74 +159,138 @@
             width: 100%;
         }
 
+        /* Search form styles */
+        .navbar-search-form {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center; /* centers horizontally */
+            margin: 0 auto;
+        }
+
+        .navbar-search-input {
+            background-color: #2a2a2a;
+            border: 1px solid #444;
+            color: var(--light-color);
+        }
+
+            .navbar-search-input:focus {
+                background-color: #333;
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 0.2rem rgba(30, 144, 255, 0.25);
+                color: var(--light-color);
+            }
+
+            .navbar-search-input::placeholder {
+                color: #ccc; /* lighter for visibility */
+                opacity: 1; /* ensures it’s not too transparent */
+            }
+
+        .navbar-search-btn {
+            background-color: var(--brand-color);
+            border-color: var(--brand-color);
+        }
+
+            .navbar-search-btn:hover {
+                background-color: #e64a19;
+                border-color: #e64a19;
+            }
+
+        .navbar-search-container {
+            position: absolute;
+            left: 48%;
+            transform: translateX(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 0 15px;
+            box-sizing: border-box;
+        }
+
+        .navbar-search-form {
+            width: 100%;
+            max-width: 700px; /* Adjust as needed */
+        }
+
+        @@media (max-width: 992px) {
+            .navbar-search-form {
+                max-width: 300px;
+            }
+        }
+
         @@media (max-width: 768px) {
-            .sidebar-header
+            .sidebar-header {
+                width: 70px;
+            }
 
-        {
-            width: 70px;
-        }
+            .sidebar {
+                width: 70px;
+                left: 0;
+            }
 
-        .sidebar {
-            width: 70px;
-            left: 0;
-        }
+            .sidebar-menu li a span {
+                display: none;
+            }
 
-        .sidebar-menu li a span {
-            display: none;
-        }
+            .sidebar-menu li a i {
+                margin-right: 0;
+            }
 
-        .sidebar-menu li a i {
-            margin-right: 0;
-        }
+            .navbar {
+                margin-left: 70px;
+                width: calc(100% - 70px);
+                flex-wrap: wrap;
+                height: auto;
+                min-height: 56px;
+            }
 
-        .navbar {
-            margin-left: 70px;
-            width: calc(100% - 70px);
-        }
+            .navbar-search-form {
+                order: 3;
+                max-width: 100%;
+                margin: 10px 0;
+                width: 100%;
+            }
 
-        .main-content {
-            margin-left: 70px;
-            width: calc(100% - 70px);
-            padding: 80px 10px 20px;
-        }
+            .main-content {
+                margin-left: 70px;
+                width: calc(100% - 70px);
+                padding: 100px 10px 20px;
+            }
 
-        footer {
-            margin-left: 70px;
-            width: calc(100% - 70px);
-        }
+            footer {
+                margin-left: 70px;
+                width: calc(100% - 70px);
+            }
 
-        .content-grid {
-            flex-direction: column;
-            align-items: center;
-        }
+            .content-grid {
+                flex-direction: column;
+                align-items: center;
+            }
 
-        .placeholder-box {
-            width: 100%;
-            max-width: 300px;
-        }
+            .placeholder-box {
+                width: 100%;
+                max-width: 300px;
+            }
 
-        #aiChatPopup {
-            width: calc(100% - 40px);
-            max-width: 420px;
-            height: 70vh;
-        }
+            #aiChatPopup {
+                width: calc(100% - 40px);
+                max-width: 420px;
+                height: 70vh;
+            }
+            /* Navbar adjustments for mobile */
+            .navbar-nav {
+                flex-direction: column;
+                align-items: flex-end;
+                width: 100%;
+            }
 
-        /* Navbar adjustments for mobile */
-        .navbar-nav {
-            flex-direction: column;
-            align-items: flex-end;
-            width: 100%;
-        }
+            .navbar-collapse {
+                justify-content: flex-end;
+            }
 
-        .navbar-collapse {
-            justify-content: flex-end;
-        }
-
-        .nav-item {
-            text-align: right;
-            margin: 0.5rem 0;
-        }
-
+            .nav-item {
+                text-align: right;
+                margin: 0.5rem 0;
+            }
         }
 
         #aiChatBtn {
@@ -375,8 +437,20 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark">
             <div class="container-fluid">
-                <div class="d-flex w-100 justify-content-between align-items-center">
-                    <div></div>
+                <!-- Centered Search Form -->
+                <div class="navbar-search-container">
+                    <form class="navbar-search-form" asp-controller="Post" asp-action="Search" method="get">
+                        <div class="input-group">
+                            <input type="search" class="form-control navbar-search-input" placeholder="Search posts..."
+                                   name="searchString" aria-label="Search">
+                            <button class="btn navbar-search-btn" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="d-flex justify-content-end align-items-center">
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
