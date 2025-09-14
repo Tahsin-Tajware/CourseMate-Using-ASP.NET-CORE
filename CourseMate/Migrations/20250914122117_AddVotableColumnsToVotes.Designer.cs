@@ -3,6 +3,7 @@ using System;
 using CourseMate.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CourseMate.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250914122117_AddVotableColumnsToVotes")]
+    partial class AddVotableColumnsToVotes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -202,7 +205,7 @@ namespace CourseMate.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CommentId")
+                    b.Property<int>("CommentId")
                         .HasColumnType("integer");
 
                     b.Property<int?>("PostId")
@@ -214,6 +217,13 @@ namespace CourseMate.Migrations
 
                     b.Property<int>("Value")
                         .HasColumnType("integer");
+
+                    b.Property<int>("VotableId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("VotableType")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -409,11 +419,13 @@ namespace CourseMate.Migrations
 
             modelBuilder.Entity("CourseMate.Models.Vote", b =>
                 {
-                    b.HasOne("CourseMate.Models.Comment", "Comment")
+                    b.HasOne("CourseMate.Models.Comment", null)
                         .WithMany("Votes")
-                        .HasForeignKey("CommentId");
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("CourseMate.Models.Post", "Post")
+                    b.HasOne("CourseMate.Models.Post", null)
                         .WithMany("Votes")
                         .HasForeignKey("PostId");
 
@@ -422,10 +434,6 @@ namespace CourseMate.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Comment");
-
-                    b.Navigation("Post");
 
                     b.Navigation("User");
                 });

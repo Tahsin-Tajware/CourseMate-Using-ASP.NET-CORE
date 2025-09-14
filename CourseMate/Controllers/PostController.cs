@@ -94,68 +94,6 @@ namespace CourseMate.Controllers
             return RedirectToAction("Details", new { id = comment.PostId });
         }
 
-        // POST: Post/Vote
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Vote(int id, string votableType, int value)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return Unauthorized();
-            }
-
-            // Check if the vote is for a valid post or comment
-            if (votableType != "Post" && votableType != "Comment")
-            {
-                return BadRequest("Invalid votable type");
-            }
-
-            // Fetch the existing vote if it exists
-            var existingVote = await _context.Votes
-                .FirstOrDefaultAsync(v => v.UserId == user.Id && v.VotableId == id && v.VotableType == votableType);
-
-            if (existingVote == null)
-            {
-                // If no vote exists, create a new vote
-                var vote = new Vote
-                {
-                    UserId = user.Id,
-                    VotableId = id,
-                    VotableType = votableType,
-                    Value = value
-                };
-                _context.Votes.Add(vote);
-            }
-            else
-            {
-                // If the vote exists and is the same, remove it (toggle)
-                if (existingVote.Value == value)
-                {
-                    _context.Votes.Remove(existingVote);
-                }
-                else
-                {
-                    // Otherwise update it
-                    existingVote.Value = value;
-                    _context.Votes.Update(existingVote);
-                }
-            }
-
-            await _context.SaveChangesAsync();
-
-            // Redirect back to the post
-            if (votableType == "Post")
-            {
-                return RedirectToAction("Details", new { id });
-            }
-            else
-            {
-                var comment = await _context.Comments.FindAsync(id);
-                return RedirectToAction("Details", new { id = comment.PostId });
-            }
-        }
-
         // GET: Post/Create
         public IActionResult Create()
         {

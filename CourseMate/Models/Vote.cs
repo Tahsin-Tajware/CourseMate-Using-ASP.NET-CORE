@@ -9,25 +9,30 @@ namespace CourseMate.Models
         public int Id { get; set; }
 
         [Required]
-        public string UserId { get; set; }  // Foreign key for the user who voted
+        public string UserId { get; set; }  // FK for the user who voted
 
         [ForeignKey("UserId")]
         public virtual Users User { get; set; }
 
-        [Required]
-        public int VotableId { get; set; }   // FK for Post or Comment (can be Post.Id or Comment.Id)
+        // FK for the post being voted on (nullable if vote is on a comment)
+        public int? PostId { get; set; }
+
+        [ForeignKey("PostId")]
+        public virtual Post Post { get; set; }
+
+        // FK for the comment being voted on (nullable if vote is on a post)
+        public int? CommentId { get; set; }
+
+        [ForeignKey("CommentId")]
+        public virtual Comment Comment { get; set; }
 
         [Required]
-        public string VotableType { get; set; }   // Can be "Post" or "Comment"
-
-        public int Value { get; set; }  // e.g. 1 = upvote, -1 = downvote
+        public int Value { get; set; }  // 1 = upvote, -1 = downvote
 
         [NotMapped]
-        public bool IsUpvote => Value == 1;  // Helper property to check if it's an upvote
+        public bool IsUpvote => Value == 1;
 
         [NotMapped]
-        public bool IsDownvote => Value == -1;  // Helper property to check if it's a downvote
-
-        public int CommentId { get; internal set; }
+        public bool IsDownvote => Value == -1;
     }
 }
