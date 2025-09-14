@@ -84,9 +84,13 @@
         <button class="action-btn share-btn">
           <i class="fas fa-share"></i> Share
         </button>
-        <button class="action-btn save-btn">
-          <i class="far fa-bookmark"></i> Save
-        </button>
+        <form asp-controller="Post" asp-action="SavePost" method="post" style="display:inline;">
+          <input type="hidden" name="postId" value="@Model.Id" />
+          <button type="submit" class="action-btn save-btn">
+              <i class="far fa-bookmark"></i> Save
+          </button>
+        </form>
+
         <button class="action-btn more-btn">
           <i class="fas fa-ellipsis-h"></i>
         </button>

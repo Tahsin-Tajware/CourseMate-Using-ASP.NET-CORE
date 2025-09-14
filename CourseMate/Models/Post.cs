@@ -29,6 +29,7 @@ namespace CourseMate.Models
     public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
     public virtual ICollection<Vote> Votes { get; set; } = new List<Vote>();
+    public virtual ICollection<SavedPost> SavedByUsers { get; set; } = new List<SavedPost>();
 
   }
 }
