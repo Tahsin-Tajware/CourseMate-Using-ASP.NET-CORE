@@ -56,10 +56,10 @@
             <input type="hidden" name="parentId" value="@comment.Id" />
             <textarea name="content" required placeholder="Write your reply here..."></textarea>
             <div class="form-actions">
-                <div class="anonymous-checkbox">
+                @* <div class="anonymous-checkbox">
                     <input type="checkbox" id="IsAnonymous@(comment.Id)" name="isAnonymous" />
                     <label for="IsAnonymous@(comment.Id)">Post as Anonymous</label>
-                </div>
+                </div> *@
                 <button type="submit" class="btn-submit">Post Reply</button>
             </div>
         </form>
