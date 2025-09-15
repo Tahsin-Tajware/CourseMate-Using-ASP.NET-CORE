@@ -94,11 +94,47 @@ namespace CourseMate.Controllers
             return RedirectToAction("Details", new { id = comment.PostId });
         }
 
-        // GET: Post/Create
-        public IActionResult Create()
-        {
-            return View(new CreatePostViewModel());
-        }
+    // POST: Report/ReportComment
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ReportComment(int commentId, string reason)
+    {
+      var user = await _userManager.GetUserAsync(User);
+
+      if (user == null)
+      {
+        return Unauthorized();
+      }
+
+      var comment = await _context.Comments
+          .Include(c => c.Post)
+          .FirstOrDefaultAsync(c => c.Id == commentId);
+
+      if (comment == null)
+      {
+        return NotFound();
+      }
+
+      var report = new ReportedComment
+      {
+        CommentId = commentId,
+        UserId = user.Id,
+        Reason = reason,
+        ReportedAt = DateTime.UtcNow
+      };
+
+      _context.ReportedComments.Add(report);
+      await _context.SaveChangesAsync();
+
+      TempData["SuccessMessage"] = "Comment reported successfully!";
+      return RedirectToAction("Details", "Post", new { id = comment.PostId });
+    }
+
+    // GET: Post/Create
+    public IActionResult Create()
+    {
+      return View(new CreatePostViewModel());
+    }
 
         // POST: Post/Create
         [HttpPost]
