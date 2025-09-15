@@ -14,5 +14,7 @@ namespace CourseMate.Data
     public DbSet<Comment> Comments { get; set; }
     public DbSet<Vote> Votes { get; set; }
     public DbSet<SavedPost> SavedPost { get; set; }
+    public DbSet<ReportedComment> ReportedComments { get; set; }
+
   }
 }
