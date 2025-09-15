@@ -689,7 +689,7 @@
                     @TempData["SuccessMessage"]
                 </div>
             }
-            <div class="post-type-selector">
+            @* <div class="post-type-selector">
                 <button type="button" class="post-type-btn active">
                     <i class="fas fa-align-left"></i> Text
                 </button>
@@ -699,7 +699,7 @@
                 <button type="button" class="post-type-btn">
                     <i class="fas fa-poll"></i> Poll
                 </button>
-            </div>
+            </div> *@
             <form asp-action="Create" method="post" id="createPostForm" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-columns">
@@ -735,7 +735,7 @@
                             <span asp-validation-for="Varsity" class="text-danger"></span>
                         </div>
                         <!-- New Photo Upload -->
-                        <div class="form-group">
+                        @* <div class="form-group">
                             <label class="floating-label d-block mb-2">Choose a Photo (optional)</label>
                             <label class="upload-box">
                                 <div class="icon">📷</div>
@@ -744,7 +744,7 @@
                             </label>
                             <span id="file-name" class="file-name"></span>
                             <span asp-validation-for="Photo" class="text-danger"></span>
-                        </div>
+                        </div> *@
                     </div>
                 </div>
                 <div class="toggle-container">
