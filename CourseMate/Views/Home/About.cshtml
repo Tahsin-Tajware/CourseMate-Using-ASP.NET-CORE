@@ -2,8 +2,447 @@
     ViewData["Title"] = "About";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<div class="about-container">
+    <header class="about-header">
+        <h1 class="about-title">About CourseMate</h1>
+        <div class="header-decoration"></div>
+    </header>
+    <div class="about-content">
+        <p class="intro-text">CourseMate is a dynamic platform empowering students and educators with a centralized
+            web-based Q&A space, fostering knowledge sharing, insightful answers, and vibrant academic collaboration.
+        </p>
 
-<h2>About CourseMate</h2>
-<div>
-    <p>CourseMate is a platform for students to ask and answer questions.</p>
+        <!-- Dropdown Sections -->
+        <div class="dropdown-section">
+            <button class="dropdown-btn" onclick="toggleDropdown('mission')">
+                <span>Our Mission</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="dropdown-content" id="mission">
+                <div class="card about-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Our Mission</h5>
+                        <div class="content-box">
+                            <p class="card-text">
+                                We aim to revolutionize academic collaboration by offering a centralized web-based Q&A
+                                platform. Here, students and educators interact seamlessly, share knowledge, and engage
+                                in meaningful discussions. Breaking traditional learning barriers, we create an
+                                inclusive space where every question finds an answer and every learner receives
+                                guidance. Through course-specific discussions, structured knowledge preservation, and
+                                rigorous quality control, we empower students and staff with access to a vibrant
+                                academic community that cherishes integrity, engagement, and shared growth. Our goal is
+                                to enhance knowledge exchange, extending learning beyond the classroom to cultivate a
+                                culture of lifelong curiosity and academic excellence.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dropdown-section">
+            <button class="dropdown-btn" onclick="toggleDropdown('vision')">
+                <span>Our Vision</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="dropdown-content" id="vision">
+                <div class="card about-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Our Vision</h5>
+                        <div class="content-box">
+                            <p class="card-text">
+                                We envision a world where learning knows no bounds, knowledge is universally accessible,
+                                and academic communities flourish together. CourseMate aspires to be the premier hub for
+                                students and educators, offering structured discussions, preserved insights, and
+                                encouraged intellectual engagement. With secure authentication, gamified participation,
+                                and efficient content moderation, we are building an ecosystem that upholds academic
+                                integrity, fosters meaningful connections, and drives national-level impact. Our future
+                                sees education transcending classrooms into a dynamic, collaborative, and innovative
+                                digital space, empowering learners to ask, explore, and grow without limits.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dropdown-section">
+            <button class="dropdown-btn" onclick="toggleDropdown('project')">
+                <span>Our Project</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="dropdown-content" id="project">
+                <div class="card about-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Our Project</h5>
+                        <div class="content-box">
+                            <p class="card-text">
+                                Our platform is meticulously designed to:
+                            <ul class="project-list">
+                                <li> Streamline academic discussions with course-specific organization.</li>
+                                <li> Ensure content quality through user reputation and moderation.</li>
+                                <li> Encourage participation via gamification and incentives.</li>
+                                <li> Secure authentication to maintain a safe academic space.</li>
+                                <li> Provide efficient knowledge discovery for students and educators.</li>
+                            </ul>
+                            By addressing the absence of a centralized platform and promoting collaborative learning,
+                            our project seeks to redefine online academic engagement and leave a lasting impact on
+                            education.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dropdown-section">
+            <button class="dropdown-btn" onclick="toggleDropdown('team')">
+                <span>Our Team</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="dropdown-content" id="team">
+                <div class="card about-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Our Team</h5>
+                        <div class="content-box">
+                            <div class="team-members">
+                                <div class="team-member">
+                                    <h6>A.S.M. Tahsin Tajware</h6>
+                                    <a href="https://www.linkedin.com/in/tahsintajware" target="_blank"
+                                        class="linkedin-link">
+                                        <i class="fab fa-linkedin"></i> LinkedIn
+                                    </a>
+                                </div>
+                                <div class="team-member">
+                                    <h6>Abdullah Al Tamim</h6>
+                                    <a href="https://www.linkedin.com/in/abdullah-al-tamim-b6a3b1222" target="_blank"
+                                        class="linkedin-link">
+                                        <i class="fab fa-linkedin"></i> LinkedIn
+                                    </a>
+                                </div>
+                                <div class="team-member">
+                                    <h6>Sonod Sadman</h6>
+                                    <a href="https://www.linkedin.com/in/sonod-sadman-3b578133b/" target="_blank"
+                                        class="linkedin-link">
+                                        <i class="fab fa-linkedin"></i> LinkedIn
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<style>
+    .about-container {
+        padding: 60px 20px;
+        max-width: 1300px;
+        margin: 0 auto;
+        color: var(--dark-color);
+        background: linear-gradient(135deg, #121212 0%, #1a1a1b 100%);
+        border-radius: 12px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .about-header {
+        text-align: center;
+        margin-bottom: 40px;
+        position: relative;
+    }
+
+    .about-title {
+        font-size: 3rem;
+        font-weight: 800;
+        color: var(--brand-color);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+        animation: fadeInUp 1s ease-out;
+    }
+
+    .header-decoration {
+        width: 60px;
+        height: 4px;
+        background: var(--primary-color);
+        margin: 0 auto 20px;
+        border-radius: 2px;
+        animation: pulse 2s infinite;
+    }
+
+    .intro-text {
+        font-size: 1.3rem;
+        text-align: center;
+        margin-bottom: 50px;
+        color: #d7dadc;
+        line-height: 1.8;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        backdrop-filter: blur(5px);
+    }
+
+    .dropdown-section {
+        margin-bottom: 25px;
+    }
+
+    .dropdown-btn {
+        width: 100%;
+        padding: 18px;
+        background: linear-gradient(90deg, #1f1f1f, #2a2a2a);
+        border: none;
+        border-radius: 10px;
+        color: var(--light-color);
+        font-size: 1.3rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: left;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease, background 0.3s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dropdown-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(30, 144, 255, 0.2);
+        transition: left 0.3s ease;
+    }
+
+    .dropdown-btn:hover::before {
+        left: 0;
+    }
+
+    .dropdown-btn:hover {
+        transform: translateY(-2px);
+        background: linear-gradient(90deg, #2a2a2a, #333);
+    }
+
+    .dropdown-btn i {
+        transition: transform 0.3s ease;
+    }
+
+    .dropdown-btn.active i {
+        transform: rotate(180deg);
+    }
+
+    .dropdown-content {
+        display: none;
+        padding: 15px 0;
+        animation: slideDown 0.3s ease-out;
+    }
+
+    .dropdown-content.active {
+        display: block;
+    }
+
+    .about-card {
+        background: linear-gradient(135deg, #1a1a1b, #252525);
+        border-radius: 10px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .card-body {
+        padding: 25px;
+    }
+
+    .card-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: var(--brand-color);
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        border-bottom: 2px solid var(--primary-color);
+        padding-bottom: 5px;
+    }
+
+    .content-box {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        padding: 20px;
+        margin-bottom: 15px;
+        backdrop-filter: blur(3px);
+    }
+
+    .card-text {
+        font-size: 1.1rem;
+        color: #e0e0e0;
+        line-height: 1.8;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .project-list {
+        list-style: none;
+        padding-left: 25px;
+    }
+
+    .project-list li {
+        margin-bottom: 15px;
+        color: #d7dadc;
+        position: relative;
+    }
+
+    .project-list li::before {
+        content: '✔';
+        color: var(--brand-color);
+        position: absolute;
+        left: -20px;
+    }
+
+    .team-members {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+        justify-content: center;
+        padding: 20px 0;
+    }
+
+    .team-member {
+        text-align: center;
+        width: 280px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .team-member:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .team-member h6 {
+        font-size: 1.4rem;
+        color: var(--primary-color);
+        margin-bottom: 15px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .linkedin-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: #0077b5;
+        text-decoration: none;
+        font-size: 1.1rem;
+        font-weight: 500;
+        transition: color 0.3s ease, transform 0.3s ease;
+    }
+
+    .linkedin-link:hover {
+        color: #005e91;
+        transform: scale(1.05);
+    }
+
+    .linkedin-link i {
+        font-size: 1.3rem;
+    }
+
+    @@media (max-width: 768px) {
+        .about-container {
+            padding: 40px 15px;
+        }
+
+        .about-title {
+            font-size: 2.2rem;
+        }
+
+        .intro-text {
+            font-size: 1.1rem;
+            padding: 15px;
+        }
+
+        .dropdown-btn {
+            font-size: 1.1rem;
+            padding: 15px;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+        }
+
+        .card-text {
+            font-size: 1rem;
+        }
+
+        .team-member {
+            width: 100%;
+            padding: 15px;
+        }
+    }
+
+    /* Animations */
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.1);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+</style>
+
+<script>
+    function toggleDropdown(id) {
+        const content = document.getElementById(id);
+        const btn = content.previousElementSibling;
+        content.classList.toggle('active');
+        btn.classList.toggle('active');
+        if (content.classList.contains('active')) {
+            content.style.maxHeight = content.scrollHeight + 'px';
+        } else {
+            content.style.maxHeight = null;
+        }
+    }
+
+    // Initialize smooth dropdown expansion
+    document.querySelectorAll('.dropdown-content').forEach(content => {
+        content.style.transition = 'max-height 0.3s ease-out';
+    });
+</script>

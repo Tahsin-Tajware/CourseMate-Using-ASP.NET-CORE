@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,7 +22,8 @@
             --transition: all 0.3s ease;
         }
 
-        html, body {
+        html,
+        body {
             height: 100%;
             background-color: var(--bg-color);
             color: var(--dark-color);
@@ -70,7 +72,7 @@
             height: 56px;
         }
 
-        .sidebar.collapsed ~ .navbar {
+        .sidebar.collapsed~.navbar {
             margin-left: 70px;
             width: calc(100% - 70px);
         }
@@ -81,14 +83,14 @@
             transition: var(--transition);
         }
 
-            .nav-link.active {
-                color: var(--brand-color) !important;
-                font-weight: bold;
-            }
+        .nav-link.active {
+            color: var(--brand-color) !important;
+            font-weight: bold;
+        }
 
-            .nav-link:hover:not(.active) {
-                color: var(--hover-color) !important;
-            }
+        .nav-link:hover:not(.active) {
+            color: var(--hover-color) !important;
+        }
 
         .main-content {
             margin-left: 250px;
@@ -102,7 +104,7 @@
             transition: margin-left 0.3s ease;
         }
 
-        .sidebar.collapsed ~ .main-content {
+        .sidebar.collapsed~.main-content {
             margin-left: 70px;
             width: calc(100% - 70px);
         }
@@ -141,7 +143,7 @@
             transition: margin-left 0.3s ease;
         }
 
-        .sidebar.collapsed ~ footer {
+        .sidebar.collapsed~footer {
             margin-left: 70px;
             width: calc(100% - 70px);
         }
@@ -163,7 +165,7 @@
         .navbar-search-form {
             flex-grow: 1;
             display: flex;
-            justify-content: center; 
+            justify-content: center;
             margin: 0 auto;
         }
 
@@ -173,27 +175,29 @@
             color: var(--light-color);
         }
 
-            .navbar-search-input:focus {
-                background-color: #333;
-                border-color: var(--primary-color);
-                box-shadow: 0 0 0 0.2rem rgba(30, 144, 255, 0.25);
-                color: var(--light-color);
-            }
+        .navbar-search-input:focus {
+            background-color: #333;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(30, 144, 255, 0.25);
+            color: var(--light-color);
+        }
 
-            .navbar-search-input::placeholder {
-                color: #ccc; /* lighter for visibility */
-                opacity: 1; /* ensures it’s not too transparent */
-            }
+        .navbar-search-input::placeholder {
+            color: #ccc;
+            /* lighter for visibility */
+            opacity: 1;
+            /* ensures it’s not too transparent */
+        }
 
         .navbar-search-btn {
             background-color: var(--brand-color);
             border-color: var(--brand-color);
         }
 
-            .navbar-search-btn:hover {
-                background-color: #e64a19;
-                border-color: #e64a19;
-            }
+        .navbar-search-btn:hover {
+            background-color: #e64a19;
+            border-color: #e64a19;
+        }
 
         .navbar-search-container {
             /* position: absolute; */
@@ -208,7 +212,8 @@
 
         .navbar-search-form {
             width: 100%;
-            max-width: 700px; /* Adjust as needed */
+            max-width: 700px;
+            /* Adjust as needed */
         }
 
         @@media (max-width: 992px) {
@@ -276,6 +281,7 @@
                 max-width: 420px;
                 height: 70vh;
             }
+
             /* Navbar adjustments for mobile */
             .navbar-nav {
                 flex-direction: column;
@@ -350,22 +356,22 @@
             box-sizing: border-box;
         }
 
-            #aiChatMessages::-webkit-scrollbar {
-                width: 8px;
-            }
+        #aiChatMessages::-webkit-scrollbar {
+            width: 8px;
+        }
 
-            #aiChatMessages::-webkit-scrollbar-track {
-                background: #333;
-            }
+        #aiChatMessages::-webkit-scrollbar-track {
+            background: #333;
+        }
 
-            #aiChatMessages::-webkit-scrollbar-thumb {
-                background: #555;
-                border-radius: 4px;
-            }
+        #aiChatMessages::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 4px;
+        }
 
-                #aiChatMessages::-webkit-scrollbar-thumb:hover {
-                    background: #777;
-                }
+        #aiChatMessages::-webkit-scrollbar-thumb:hover {
+            background: #777;
+        }
 
         .chat-msg {
             padding: 10px 14px;
@@ -404,32 +410,34 @@
             z-index: 2;
         }
 
-            #aiChatInput input {
-                flex: 1;
-                border: none;
-                padding: 12px;
-                background: #222;
-                color: white;
-                font-size: 14px;
-                outline: none;
-            }
+        #aiChatInput input {
+            flex: 1;
+            border: none;
+            padding: 12px;
+            background: #222;
+            color: white;
+            font-size: 14px;
+            outline: none;
+        }
 
-            #aiChatInput button {
-                border: none;
-                padding: 12px 18px;
-                background: var(--brand-color);
-                color: white;
-                cursor: pointer;
-                font-size: 16px;
-                transition: background 0.2s ease;
-            }
+        #aiChatInput button {
+            border: none;
+            padding: 12px 18px;
+            background: var(--brand-color);
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.2s ease;
+        }
 
-                #aiChatInput button:hover {
-                    background: #e64a19;
-                }
+        #aiChatInput button:hover {
+            background: #e64a19;
+        }
     </style>
 </head>
+
 <body>
+    @Html.AntiForgeryToken()
     <div class="sidebar-header">
         <h3>CourseMate</h3>
     </div>
@@ -442,7 +450,7 @@
                     <form class="navbar-search-form" asp-controller="Post" asp-action="Search" method="get">
                         <div class="input-group">
                             <input type="search" class="form-control navbar-search-input" placeholder="Search posts..."
-                                   name="searchString" aria-label="Search">
+                                name="searchString" aria-label="Search">
                             <button class="btn navbar-search-btn" type="submit">
                                 <i class="fas fa-search"></i>
                             </button>
@@ -452,7 +460,7 @@
 
                 <div class="d-flex justify-content-end align-items-center">
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                 </div>
@@ -463,15 +471,18 @@
                             var currentAction = ViewContext.RouteData.Values["action"] as string;
                         }
                         <li class="nav-item">
-                            <a class="nav-link @(currentController == "Home" && currentAction == "Index" ? "active" : "")" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link @(currentController == "Home" && currentAction == "Index" ? "active" : "")"
+                                asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(currentController == "Home" && currentAction == "Privacy" ? "active" : "")" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link @(currentController == "Home" && currentAction == "Privacy" ? "active" : "")"
+                                asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         @if (User.IsInRole("User"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link @(currentController == "Home" && currentAction == "User" ? "active" : "")" asp-controller="Home" asp-action="User">Users</a>
+                                <a class="nav-link @(currentController == "Home" && currentAction == "User" ? "active" : "")"
+                                    asp-controller="Home" asp-action="User">Users</a>
                             </li>
                         }
                         @if (User.Identity.IsAuthenticated)
@@ -486,10 +497,12 @@
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link @(currentController == "Account" && currentAction == "Login" ? "active" : "")" asp-controller="Account" asp-action="Login">Login</a>
+                                <a class="nav-link @(currentController == "Account" && currentAction == "Login" ? "active" : "")"
+                                    asp-controller="Account" asp-action="Login">Login</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link @(currentController == "Account" && currentAction == "Register" ? "active" : "")" asp-controller="Account" asp-action="Register">Register</a>
+                                <a class="nav-link @(currentController == "Account" && currentAction == "Register" ? "active" : "")"
+                                    asp-controller="Account" asp-action="Register">Register</a>
                             </li>
                         }
                     </ul>
@@ -512,9 +525,10 @@
                 <div class="col-md-4 mb-2">
                     <h5>Quick Links</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-white-50">Home</a></li>
-                        <li><a href="#" class="text-white-50">Privacy</a></li>
-                        <li><a href="#" class="text-white-50">Admin</a></li>
+                        <li><a href="/" class="text-white-50">Home</a></li>
+                        <li><a href="/Home/Privacy" class="text-white-50">Privacy</a></li>
+                        <li><a href="/Home/User" class="text-white-50" @(User.IsInRole("User") ? "" :
+                                                                                                       "style='display:none;'")>Admin</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
@@ -525,7 +539,8 @@
             <hr class="my-2 bg-white-50" />
             <div class="row">
                 <div class="col-12">
-                    <p>&copy; 2025 - CourseMate. All rights reserved. <a href="#" class="text-white-50">Privacy Policy</a></p>
+                    <p>&copy; 2025 - CourseMate. All rights reserved. <a href="/Home/Privacy"
+                            class="text-white-50">Privacy Policy</a></p>
                 </div>
             </div>
         </div>
@@ -596,10 +611,11 @@
     </script>
     @await RenderSectionAsync("Scripts", required: false)
     @if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">
-        @TempData["ErrorMessage"]
-    </div>
-}
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
 </body>
+
 </html>
