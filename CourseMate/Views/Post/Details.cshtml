@@ -328,7 +328,8 @@
     padding: 16px;
     background-color: var(--reply-bg);
     border-radius: 8px;
-    display: none;
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
   }
 
   .reply-form.active {
@@ -336,6 +337,89 @@
     animation: fadeIn 0.3s ease;
   }
 
+  .reply-form textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
+    font-size: 14px;
+    resize: vertical;
+    min-height: 80px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s ease;
+}
+
+.reply-form textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.reply-form .form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.btn-cancel {
+    background-color: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-cancel:hover {
+    background-color: var(--border);
+}
+
+.comment-replies {
+    margin-top: 12px;
+    padding-left: 30px;
+    border-left: 2px solid var(--border);
+}
+
+.nested-comment {
+    margin-left: 20px;
+    border-left: 2px solid var(--border);
+    padding-left: 15px;
+}
+
+/* Adjust nested comment backgrounds for better visual hierarchy */
+.nested-comment {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.nested-comment .nested-comment {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.nested-comment .nested-comment .nested-comment {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.comment-collapse-btn {
+    margin-top: 8px;
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.comment-collapse-btn:hover {
+    background-color: var(--bg-tertiary);
+}
   .comment-form-main {
     margin-top: 20px;
     margin-bottom: 30px;
@@ -565,15 +649,26 @@
         </div>
 
         <div class="comments-container">
-          @if (Model.Comments.Any(c => c.ParentId == null))
+        @{
+  // Get top-level comments ordered by creation date (newest first)
+  var topLevelComments = Model.Comments
+    .Where(c => c.ParentId == null)
+    .OrderByDescending(c => c.CreatedAt)
+    .ToList();
+}
+
+          @if (topLevelComments.Any())
           {
-            foreach (var comment in Model.Comments.Where(c => c.ParentId == null))
+            foreach (var comment in topLevelComments)
             {
-              @await Html.PartialAsync("_Comment", new CommentViewModel { Comment = comment, CurrentUserId =
-              ViewBag.CurrentUserId, PostId = Model.Id })
-                    }
-                    }
-                    else
+              @await Html.PartialAsync("_Comment", new CommentViewModel { 
+                Comment = comment, 
+                CurrentUserId = ViewBag.CurrentUserId, 
+                PostId = Model.Id
+              })
+            }
+          }
+          else
           {
             <p class="no-comments">No comments yet. Be the first to comment!</p>
           }
@@ -586,25 +681,46 @@
 <script>
   function toggleReplyForm(commentId) {
     const form = document.getElementById(`reply-form-${commentId}`);
-    form.classList.toggle('active');
-
-    // Focus on the textarea when form is shown
-    if (form.classList.contains('active')) {
+    if (form.style.display === 'none' || form.style.display === '') {
+      form.style.display = 'block';
+      // Focus on the textarea when form is shown
       const textarea = form.querySelector('textarea');
       setTimeout(() => textarea.focus(), 100);
+    } else {
+      form.style.display = 'none';
     }
   }
 
   function toggleReplies(button, commentId) {
     const repliesContainer = document.getElementById(`replies-${commentId}`);
-    repliesContainer.classList.toggle('collapsed');
-
-    // Update button text based on state
-    const replyCount = button.getAttribute('data-reply-count');
-    if (repliesContainer.classList.contains('collapsed')) {
-      button.innerHTML = `<span>Show replies (${replyCount})</span>`;
+    const isCollapsed = repliesContainer.style.display === 'none';
+    
+    if (isCollapsed) {
+      repliesContainer.style.display = 'block';
+      button.innerHTML = `<span>Hide replies (${button.getAttribute('data-reply-count')})</span>`;
     } else {
-      button.innerHTML = `<span>Hide replies (${replyCount})</span>`;
+      repliesContainer.style.display = 'none';
+      button.innerHTML = `<span>Show replies (${button.getAttribute('data-reply-count')})</span>`;
     }
   }
+
+  // Initialize reply forms as hidden
+  document.addEventListener('DOMContentLoaded', function() {
+    // Hide all reply forms
+    const replyForms = document.querySelectorAll('.reply-form');
+    replyForms.forEach(form => {
+      form.style.display = 'none';
+    });
+    
+    // Hide all reply containers and update button text
+    const replyContainers = document.querySelectorAll('.comment-replies');
+    replyContainers.forEach(container => {
+      const commentId = container.id.replace('replies-', '');
+      const button = document.querySelector(`[onclick="toggleReplies(this, '${commentId}')"]`);
+      if (button) {
+        container.style.display = 'none';
+        button.innerHTML = `<span>Show replies (${button.getAttribute('data-reply-count')})</span>`;
+      }
+    });
+  });
 </script>

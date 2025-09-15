@@ -1,4 +1,5 @@
-﻿@using CourseMate.Models
+﻿<!-- _Comment.cshtml -->
+@using CourseMate.Models
 @using CourseMate.Models.ViewModels
 @model CommentViewModel
 
@@ -6,104 +7,141 @@
     var comment = Model.Comment;
     var depth = Model.Depth;
     var replyCount = comment.Replies.Count;
+    var isDeleted = comment.IsDeleted || comment.IsRemovedByModerator;
+    var isAdmin = User.IsInRole("Admin");
 }
 
 <div class="comment @(depth > 0 ? "nested-comment" : "")">
     <div class="comment-header">
-        <div class="user-avatar">
-            @((comment.IsAnonymous ? "A" : comment.User?.FullName?[0].ToString() ?? "U"))
-        </div>
-        <div class="comment-meta">
-            <div class="username">@(comment.IsAnonymous ? "Anonymous" : comment.User?.FullName ?? "Unknown User")</div>
-            <div class="datetime">@comment.CreatedAt.ToString("g")</div>
-        </div>
-
-        <!-- 3-dot menu -->
-        <div class="comment-menu">
-            <button class="menu-btn" onclick="toggleMenu('@comment.Id')">⋮</button>
-            <div class="menu-dropdown" id="menu-@comment.Id">
-                <button onclick="toggleReportForm('@comment.Id')">Report</button>
+        @if (isDeleted)
+        {
+            <div class="user-avatar">×</div>
+            <div class="comment-meta">
+                <div class="username">@(comment.IsRemovedByModerator ? "[removed]" : "[deleted]")</div>
+                <div class="datetime">@comment.CreatedAt.ToString("g")</div>
             </div>
-        </div>
+        }
+        else
+        {
+            <div class="user-avatar">
+                @((comment.IsAnonymous ? "A" : comment.User?.FullName?[0].ToString() ?? "U"))
+            </div>
+            <div class="comment-meta">
+                <div class="username">@(comment.IsAnonymous ? "Anonymous" : comment.User?.FullName ?? "Unknown User")</div>
+                <div class="datetime">@comment.CreatedAt.ToString("g")</div>
+            </div>
+
+            <!-- 3-dot menu - Only show for non-admin users and not their own comments -->
+            @if (comment.UserId != Model.CurrentUserId && !isAdmin)
+            {
+                <div class="comment-menu">
+                    <button class="menu-btn" onclick="toggleMenu('@comment.Id')">⋮</button>
+                    <div class="menu-dropdown" id="menu-@comment.Id">
+                        <button onclick="toggleReportForm('@comment.Id')">Report</button>
+                    </div>
+                </div>
+            }
+        }
     </div>
 
     <div class="comment-content">
-        @comment.Content
+        @if (isDeleted)
+        {
+            <span class="text-muted">@(comment.IsRemovedByModerator ? "[removed by moderator]" : "[deleted by user]")</span>
+        }
+        else
+        {
+            @comment.Content
+        }
     </div>
 
-    <div class="comment-actions">
-        <button class="action-btn" onclick="toggleReplyForm('@comment.Id')">
-            <i>↩</i> Reply
-        </button>
+    @if (!isDeleted)
+    {
+        <div class="comment-actions">
+            <button class="action-btn" onclick="toggleReplyForm('@comment.Id')">
+                <i>↩</i> Reply
+            </button>
 
-        <div class="vote-count-comment">
-            <form asp-controller="Vote" asp-action="Vote" method="post" style="display: inline;">
-                <input type="hidden" name="id" value="@comment.Id" />
-                <input type="hidden" name="votableType" value="Comment" />
-                <button type="submit" name="value" value="1" 
-                    class="vote-arrow @(Model.CurrentUserVote == 1 ? "upvoted" : "")"
-                    @(comment.UserId == Model.CurrentUserId ? "disabled" : "")>↑</button>
-            </form>
-            <span>@comment.Upvotes</span>
+            <div class="vote-count-comment">
+                <form asp-controller="Vote" asp-action="Vote" method="post" style="display: inline;">
+                    <input type="hidden" name="id" value="@comment.Id" />
+                    <input type="hidden" name="votableType" value="Comment" />
+                    <button type="submit" name="value" value="1" 
+                            class="vote-arrow @(Model.CurrentUserVote == 1 ? "upvoted" : "")"
+                            @(comment.UserId == Model.CurrentUserId ? "disabled" : "")>↑</button>
+                </form>
+                <span>@comment.Upvotes</span>
 
-            <form asp-controller="Vote" asp-action="Vote" method="post" style="display: inline;">
-                <input type="hidden" name="id" value="@comment.Id" />
-                <input type="hidden" name="votableType" value="Comment" />
-                <button type="submit" name="value" value="-1" 
-                    class="vote-arrow @(Model.CurrentUserVote == -1 ? "downvoted" : "")"
-                    @(comment.UserId == Model.CurrentUserId ? "disabled" : "")>↓</button>
-            </form>
-            <span>@comment.Downvotes</span>
+                <form asp-controller="Vote" asp-action="Vote" method="post" style="display: inline;">
+                    <input type="hidden" name="id" value="@comment.Id" />
+                    <input type="hidden" name="votableType" value="Comment" />
+                    <button type="submit" name="value" value="-1" 
+                            class="vote-arrow @(Model.CurrentUserVote == -1 ? "downvoted" : "")"
+                            @(comment.UserId == Model.CurrentUserId ? "disabled" : "")>↓</button>
+                </form>
+                <span>@comment.Downvotes</span>
+            </div>
+            
+            @if (comment.UserId == Model.CurrentUserId || User.IsInRole("Admin"))
+            {
+                <form asp-action="DeleteComment" method="post" class="d-inline">
+                    <input type="hidden" name="commentId" value="@comment.Id" />
+                    <button type="submit" class="action-btn delete-btn">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </form>
+            }
         </div>
-    </div>
 
-    <!-- Reply Form (initially hidden) -->
-    <div class="reply-form" id="reply-form-@comment.Id" style="display:none;">
-        <form asp-action="AddComment" method="post">
-            <input type="hidden" name="postId" value="@Model.PostId" />
-            <input type="hidden" name="parentId" value="@comment.Id" />
-            <textarea name="content" required placeholder="Write your reply here..."></textarea>
-            <div class="form-actions">
-                @* <div class="anonymous-checkbox">
-                    <input type="checkbox" id="IsAnonymous@(comment.Id)" name="isAnonymous" />
-                    <label for="IsAnonymous@(comment.Id)">Post as Anonymous</label>
-                </div> *@
-                <button type="submit" class="btn-submit">Post Reply</button>
-            </div>
-        </form>
-    </div>
+        <!-- Reply Form (initially hidden) -->
+        <div class="reply-form" id="reply-form-@comment.Id">
+    <form asp-action="AddComment" method="post">
+        <input type="hidden" name="postId" value="@Model.PostId" />
+        <input type="hidden" name="parentId" value="@comment.Id" />
+        <textarea name="content" required placeholder="Write your reply here..."></textarea>
+        <div class="form-actions">
+            <button type="submit" class="btn-submit">Post Reply</button>
+            <button type="button" class="btn-cancel" onclick="toggleReplyForm('@comment.Id')">Cancel</button>
+        </div>
+    </form>
+</div>
 
-    <!-- Report Form (initially hidden) -->
-    <div class="report-form" id="report-form-@comment.Id" style="display:none;">
-        <form asp-controller="Post" asp-action="ReportComment" method="post">
-            <input type="hidden" name="commentId" value="@comment.Id" />
-            <textarea name="reason" required placeholder="Why are you reporting this comment?"></textarea>
-            <div class="form-actions">
-                <button type="submit" class="btn-submit">Submit Report</button>
-                <button type="button" class="btn-cancel" onclick="toggleReportForm('@comment.Id')">Cancel</button>
+        <!-- Report Form (initially hidden) - Only show for non-admin users -->
+        @if (!isAdmin)
+        {
+            <div class="report-form" id="report-form-@comment.Id" style="display:none;">
+                <form asp-controller="Post" asp-action="ReportComment" method="post">
+                    <input type="hidden" name="commentId" value="@comment.Id" />
+                    <textarea name="reason" required placeholder="Why are you reporting this comment?"></textarea>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit">Submit Report</button>
+                        <button type="button" class="btn-cancel" onclick="toggleReportForm('@comment.Id')">Cancel</button>
+                    </div>
+                </form>
             </div>
-        </form>
-    </div>
+        }
+    }
 
     <!-- Replies -->
     @if (comment.Replies.Any())
-    {
-        <button class="comment-collapse-btn" onclick="toggleReplies(this, '@comment.Id')" data-reply-count="@replyCount">
-            <span>Hide replies (@replyCount)</span>
-        </button>
+{
+    <button class="comment-collapse-btn" onclick="toggleReplies(this, '@comment.Id')" 
+            data-reply-count="@replyCount">
+        <span>Show replies (@replyCount)</span>
+    </button>
 
-        <div class="comment-replies" id="replies-@comment.Id">
-            @foreach (var reply in comment.Replies)
-            {
-                @await Html.PartialAsync("_Comment", new CommentViewModel {
-                    Comment = reply,
-                    CurrentUserId = Model.CurrentUserId,
-                    PostId = Model.PostId,
-                    Depth = depth + 1
-                })
-            }
-        </div>
-    }
+    <div class="comment-replies" id="replies-@comment.Id">
+        @foreach (var reply in comment.Replies)
+        {
+            @await Html.PartialAsync("_Comment", new CommentViewModel {
+                Comment = reply,
+                CurrentUserId = Model.CurrentUserId,
+                PostId = Model.PostId,
+                Depth = depth + 1
+            })
+        }
+    </div>
+}
 </div>
 
 <style>
@@ -166,7 +204,9 @@
 
     function toggleReportForm(commentId) {
         const form = document.getElementById("report-form-" + commentId);
-        form.style.display = form.style.display === "block" ? "none" : "block";
-        document.getElementById("menu-" + commentId).style.display = "none"; // hide menu after clicking
+        if (form) {
+            form.style.display = form.style.display === "block" ? "none" : "block";
+            document.getElementById("menu-" + commentId).style.display = "none"; // hide menu after clicking
+        }
     }
 </script>

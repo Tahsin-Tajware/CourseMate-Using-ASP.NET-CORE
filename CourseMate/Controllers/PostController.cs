@@ -25,19 +25,19 @@ namespace CourseMate.Controllers
         // POST: Post/AddComment
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddComment(int postId, string content, bool isAnonymous, int? parentId = null)
+        public async Task<IActionResult> AddComment(int postId, string content, int? parentId = null)
         {
             var user = await _userManager.GetUserAsync(User);
 
             if (string.IsNullOrWhiteSpace(content))
             {
+                TempData["ErrorMessage"] = "Comment cannot be empty.";
                 return RedirectToAction("Details", new { id = postId });
             }
 
             var comment = new Comment
             {
                 Content = content,
-                IsAnonymous = isAnonymous,
                 PostId = postId,
                 UserId = user?.Id,
                 ParentId = parentId,
@@ -47,7 +47,7 @@ namespace CourseMate.Controllers
             _context.Comments.Add(comment);
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = "Comment added successfully!";
+            TempData["SuccessMessage"] = parentId.HasValue ? "Reply added successfully!" : "Comment added successfully!";
             return RedirectToAction("Details", new { id = postId });
         }
 
@@ -56,18 +56,26 @@ namespace CourseMate.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteComment(int commentId)
         {
-            var comment = await _context.Comments
-                .Include(c => c.Replies)
-                .FirstOrDefaultAsync(c => c.Id == commentId);
+            var user = await _userManager.GetUserAsync(User);
+            var comment = await _context.Comments.FindAsync(commentId);
 
             if (comment == null)
             {
                 return NotFound();
             }
 
-            // Remove replies
-            _context.Comments.RemoveRange(comment.Replies);
-            _context.Comments.Remove(comment);
+            // Check if user owns the comment or is admin
+            if (comment.UserId != user.Id && !User.IsInRole("Admin"))
+            {
+                return Forbid();
+            }
+
+            // Soft delete instead of removing
+            comment.IsDeleted = true;
+            comment.DeletedAt = DateTime.UtcNow;
+            comment.DeletedByUserId = user.Id;
+
+            _context.Comments.Update(comment);
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Comment deleted successfully!";
@@ -94,47 +102,62 @@ namespace CourseMate.Controllers
             return RedirectToAction("Details", new { id = comment.PostId });
         }
 
-    // POST: Report/ReportComment
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> ReportComment(int commentId, string reason)
-    {
-      var user = await _userManager.GetUserAsync(User);
+        // POST: Report/ReportComment
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ReportComment(int commentId, string reason)
+        {
+            var user = await _userManager.GetUserAsync(User);
 
-      if (user == null)
-      {
-        return Unauthorized();
-      }
+            if (user == null)
+            {
+                return Unauthorized();
+            }
 
-      var comment = await _context.Comments
-          .Include(c => c.Post)
-          .FirstOrDefaultAsync(c => c.Id == commentId);
+            var comment = await _context.Comments
+                .Include(c => c.Post)
+                .FirstOrDefaultAsync(c => c.Id == commentId);
 
-      if (comment == null)
-      {
-        return NotFound();
-      }
+            if (comment == null)
+            {
+                return NotFound();
+            }
 
-      var report = new ReportedComment
-      {
-        CommentId = commentId,
-        UserId = user.Id,
-        Reason = reason,
-        ReportedAt = DateTime.UtcNow
-      };
+            // Prevent admins from reporting comments
+            if (User.IsInRole("Admin"))
+            {
+                TempData["ErrorMessage"] = "Administrators cannot report comments. Use the moderation tools instead.";
+                return RedirectToAction("Details", new { id = comment.PostId });
+            }
 
-      _context.ReportedComments.Add(report);
-      await _context.SaveChangesAsync();
+            // Prevent self-reporting
+            if (comment.UserId == user.Id)
+            {
+                TempData["ErrorMessage"] = "You cannot report your own comments.";
+                return RedirectToAction("Details", "Post", new { id = comment.PostId });
+            }
 
-      TempData["SuccessMessage"] = "Comment reported successfully!";
-      return RedirectToAction("Details", "Post", new { id = comment.PostId });
-    }
+            var report = new ReportedComment
+            {
+                CommentId = commentId,
+                UserId = user.Id,
+                Reason = reason,
+                ReportedAt = DateTime.UtcNow
+            };
 
-    // GET: Post/Create
-    public IActionResult Create()
-    {
-      return View(new CreatePostViewModel());
-    }
+            _context.ReportedComments.Add(report);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Comment reported successfully!";
+            return RedirectToAction("Details", "Post", new { id = comment.PostId });
+        }
+
+
+        // GET: Post/Create
+        public IActionResult Create()
+        {
+            return View(new CreatePostViewModel());
+        }
 
         // POST: Post/Create
         [HttpPost]

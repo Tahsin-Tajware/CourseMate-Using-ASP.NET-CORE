@@ -38,6 +38,15 @@ namespace CourseMate.Models
         public bool IsAnonymous { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+        // Soft delete properties
+        public bool IsDeleted { get; set; } = false;
+        public bool IsRemovedByModerator { get; set; } = false;
+        public DateTime? DeletedAt { get; set; }
+        public string DeletedByUserId { get; set; }
+        
+        [ForeignKey("DeletedByUserId")]
+        public virtual Users DeletedByUser { get; set; }
+        
         // Helper properties for vote counts
         [NotMapped]
         public int Upvotes => Votes?.Count(v => v.Value == 1) ?? 0;
